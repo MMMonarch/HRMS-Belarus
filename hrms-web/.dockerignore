@@ -1,0 +1,22 @@
+# dependencies
+node_modules
+.pnp
+.pnp.*
+.yarn
+
+# build
+.next
+out
+build
+
+# misc
+.git
+.gitignore
+.dockerignore
+.env*
+*.md
+.DS_Store
+coverage
+*.tsbuildinfo
+next-env.d.ts
+.vercel

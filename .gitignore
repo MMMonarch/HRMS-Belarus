@@ -1,0 +1,25 @@
+# Supabase Docker clone (heavy, cloned by setup/02-setup-supabase.ps1)
+docker/supabase-repo/
+
+# Database backups (binary dumps)
+backups/*.dump
+backups/*.sql
+!backups/.gitkeep
+!backups/README.md
+
+# IDE / Cursor (rules, MCP config, debug logs)
+.cursor/
+AGENTS.md
+
+# Environment files with secrets
+.env
+.env.local
+.env.production
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# n8n data (Docker volume)
+n8n-data/

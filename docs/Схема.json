@@ -1,0 +1,320 @@
+{
+    "content": {
+      "type": "doc",
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": "center" },
+          "content": [
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "organization.name", "label": "Организация", "format": null, "fallback": "" }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": "center" },
+          "content": [
+            { "type": "text", "text": "ПРИКАЗ № " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.regNumber", "label": "Номер приказа", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " от " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.orderDate", "label": "Дата приказа", "format": "dd.MM.yyyy", "fallback": "" }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": "center" },
+          "content": [
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.title", "label": "Заголовок приказа", "format": null, "fallback": "" }
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null },
+          "content": [
+            { "type": "text", "text": "ПРИКАЗЫВАЮ:" }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null },
+          "content": [
+            { "type": "text", "text": "1. Принять " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.employee.fullNameA", "label": "ФИО (вин.) п.1", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на должность " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.assignment.positionG", "label": "Должность (род.) п.1", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " в " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.assignment.departmentA", "label": "Подразделение (вин.) п.1", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.assignment.rate", "label": "Ставка п.1", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " ставку с " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.effectiveDate", "label": "Дата вступления в силу", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": " по контракту № " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.contract.number", "label": "Номер контракта п.1", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " от " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p1.contract.startDate", "label": "Дата начала контракта п.1", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null },
+          "content": [
+            { "type": "text", "text": "2. Принять " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.employee.fullNameA", "label": "ФИО (вин.) п.2", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на должность " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.assignment.positionG", "label": "Должность (род.) п.2", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " в " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.assignment.departmentA", "label": "Подразделение (вин.) п.2", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.assignment.rate", "label": "Ставка п.2", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " ставку с " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.effectiveDate", "label": "Дата вступления в силу", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": " по контракту № " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.contract.number", "label": "Номер контракта п.2", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " от " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p2.contract.startDate", "label": "Дата начала контракта п.2", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": "." }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": null },
+          "content": [
+            { "type": "text", "text": "3. Принять " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.employee.fullNameA", "label": "ФИО (вин.) п.3", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на должность " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.assignment.positionG", "label": "Должность (род.) п.3", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " в " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.assignment.departmentA", "label": "Подразделение (вин.) п.3", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " на " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.assignment.rate", "label": "Ставка п.3", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " ставку с " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "order.effectiveDate", "label": "Дата вступления в силу", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": " по контракту № " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.contract.number", "label": "Номер контракта п.3", "format": null, "fallback": "" }
+            },
+            { "type": "text", "text": " от " },
+            {
+              "type": "templateVariable",
+              "attrs": { "path": "p3.contract.startDate", "label": "Дата начала контракта п.3", "format": "dd.MM.yyyy", "fallback": "" }
+            },
+            { "type": "text", "text": "." }
+          ]
+        }
+      ]
+    },
+  
+    "pageSettings": {
+      "unit": "mm",
+      "format": "A4",
+      "margins": { "top": 20, "left": 30, "right": 15, "bottom": 20 },
+      "orientation": "portrait"
+    },
+  
+    "variableSchema": [
+      { "path": "order.regNumber",     "label": "Номер приказа",           "type": "string", "group": "Приказ" },
+      { "path": "order.orderDate",     "label": "Дата приказа",            "type": "date",   "group": "Приказ",   "format": "dd.MM.yyyy" },
+      { "path": "order.effectiveDate", "label": "Дата вступления в силу",  "type": "date",   "group": "Приказ",   "format": "dd.MM.yyyy" },
+      { "path": "order.title",         "label": "Заголовок приказа",       "type": "string", "group": "Приказ" },
+      { "path": "organization.name",   "label": "Организация",             "type": "string", "group": "Организация" },
+  
+      { "path": "p1.employee.fullNameA",       "label": "ФИО вин. (п.1)",        "type": "string", "group": "Пункт 1 — Сотрудник" },
+      { "path": "p1.assignment.positionG",     "label": "Должность род. (п.1)",   "type": "string", "group": "Пункт 1 — Назначение" },
+      { "path": "p1.assignment.departmentA",   "label": "Подразделение вин. (п.1)","type": "string", "group": "Пункт 1 — Назначение" },
+      { "path": "p1.assignment.rate",          "label": "Ставка (п.1)",           "type": "number", "group": "Пункт 1 — Назначение" },
+      { "path": "p1.contract.number",          "label": "№ контракта (п.1)",      "type": "string", "group": "Пункт 1 — Контракт" },
+      { "path": "p1.contract.startDate",       "label": "Дата контракта (п.1)",   "type": "date",   "group": "Пункт 1 — Контракт", "format": "dd.MM.yyyy" },
+  
+      { "path": "p2.employee.fullNameA",       "label": "ФИО вин. (п.2)",        "type": "string", "group": "Пункт 2 — Сотрудник" },
+      { "path": "p2.assignment.positionG",     "label": "Должность род. (п.2)",   "type": "string", "group": "Пункт 2 — Назначение" },
+      { "path": "p2.assignment.departmentA",   "label": "Подразделение вин. (п.2)","type": "string", "group": "Пункт 2 — Назначение" },
+      { "path": "p2.assignment.rate",          "label": "Ставка (п.2)",           "type": "number", "group": "Пункт 2 — Назначение" },
+      { "path": "p2.contract.number",          "label": "№ контракта (п.2)",      "type": "string", "group": "Пункт 2 — Контракт" },
+      { "path": "p2.contract.startDate",       "label": "Дата контракта (п.2)",   "type": "date",   "group": "Пункт 2 — Контракт", "format": "dd.MM.yyyy" },
+  
+      { "path": "p3.employee.fullNameA",       "label": "ФИО вин. (п.3)",        "type": "string", "group": "Пункт 3 — Сотрудник" },
+      { "path": "p3.assignment.positionG",     "label": "Должность род. (п.3)",   "type": "string", "group": "Пункт 3 — Назначение" },
+      { "path": "p3.assignment.departmentA",   "label": "Подразделение вин. (п.3)","type": "string", "group": "Пункт 3 — Назначение" },
+      { "path": "p3.assignment.rate",          "label": "Ставка (п.3)",           "type": "number", "group": "Пункт 3 — Назначение" },
+      { "path": "p3.contract.number",          "label": "№ контракта (п.3)",      "type": "string", "group": "Пункт 3 — Контракт" },
+      { "path": "p3.contract.startDate",       "label": "Дата контракта (п.3)",   "type": "date",   "group": "Пункт 3 — Контракт", "format": "dd.MM.yyyy" }
+    ],
+  
+    "variableData": {
+      "order": {
+        "regNumber": "К-42/2026",
+        "orderDate": "2026-02-28",
+        "effectiveDate": "2026-03-01",
+        "title": "О приёме на работу"
+      },
+      "organization": {
+        "name": "ООО «Альфа Групп»"
+      },
+      "branch": {
+        "name": "Минский филиал"
+      },
+      "p1": {
+        "employee": {
+          "lastName": "Иванов",
+          "firstName": "Пётр",
+          "patronymic": "Сергеевич",
+          "fullName": "Иванов Пётр Сергеевич",
+          "fullNameG": "Иванова Петра Сергеевича",
+          "fullNameD": "Иванову Петру Сергеевичу",
+          "fullNameA": "Иванова Петра Сергеевича",
+          "fullNameI": "Ивановым Петром Сергеевичем",
+          "birthDate": "1990-05-15",
+          "idNumber": "3150590A001PB5"
+        },
+        "assignment": {
+          "position": "инженер-программист",
+          "positionG": "инженера-программиста",
+          "positionD": "инженеру-программисту",
+          "positionA": "инженера-программиста",
+          "positionI": "инженером-программистом",
+          "department": "Отдел разработки",
+          "departmentG": "Отдела разработки",
+          "departmentA": "Отдел разработки",
+          "rate": 1.0
+        },
+        "contract": {
+          "number": "15/2026",
+          "type": "Контракт",
+          "startDate": "2026-03-01",
+          "endDate": "2027-03-01"
+        }
+      },
+      "p2": {
+        "employee": {
+          "lastName": "Петрова",
+          "firstName": "Анна",
+          "patronymic": "Игоревна",
+          "fullName": "Петрова Анна Игоревна",
+          "fullNameG": "Петровой Анны Игоревны",
+          "fullNameD": "Петровой Анне Игоревне",
+          "fullNameA": "Петрову Анну Игоревну",
+          "fullNameI": "Петровой Анной Игоревной",
+          "birthDate": "1995-08-22",
+          "idNumber": "4220895A002PB7"
+        },
+        "assignment": {
+          "position": "бухгалтер",
+          "positionG": "бухгалтера",
+          "positionD": "бухгалтеру",
+          "positionA": "бухгалтера",
+          "positionI": "бухгалтером",
+          "department": "Бухгалтерия",
+          "departmentG": "Бухгалтерии",
+          "departmentA": "Бухгалтерию",
+          "rate": 1.0
+        },
+        "contract": {
+          "number": "16/2026",
+          "type": "Контракт",
+          "startDate": "2026-03-01",
+          "endDate": "2027-03-01"
+        }
+      },
+      "p3": {
+        "employee": {
+          "lastName": "Сидоров",
+          "firstName": "Дмитрий",
+          "patronymic": "Алексеевич",
+          "fullName": "Сидоров Дмитрий Алексеевич",
+          "fullNameG": "Сидорова Дмитрия Алексеевича",
+          "fullNameD": "Сидорову Дмитрию Алексеевичу",
+          "fullNameA": "Сидорова Дмитрия Алексеевича",
+          "fullNameI": "Сидоровым Дмитрием Алексеевичем",
+          "birthDate": "1988-11-03",
+          "idNumber": "5031188A003PB2"
+        },
+        "assignment": {
+          "position": "юрисконсульт",
+          "positionG": "юрисконсульта",
+          "positionD": "юрисконсульту",
+          "positionA": "юрисконсульта",
+          "positionI": "юрисконсультом",
+          "department": "Юридический отдел",
+          "departmentG": "Юридического отдела",
+          "departmentA": "Юридический отдел",
+          "rate": 0.5
+        },
+        "contract": {
+          "number": "17/2026",
+          "type": "Контракт",
+          "startDate": "2026-03-01",
+          "endDate": "2028-03-01"
+        }
+      }
+    }
+  }

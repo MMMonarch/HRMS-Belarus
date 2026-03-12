@@ -1,0 +1,256 @@
+/* TipTap editor content typography */
+.editor-content .tiptap {
+  outline: none;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 14pt;
+  line-height: 1.5;
+  color: inherit;
+  min-height: 100%;
+}
+
+.editor-content .tiptap p {
+  margin: 0 0 0.3em;
+}
+
+.editor-content .tiptap h1 {
+  font-size: 18pt;
+  font-weight: 700;
+  margin: 0.5em 0 0.3em;
+}
+
+.editor-content .tiptap h2 {
+  font-size: 16pt;
+  font-weight: 700;
+  margin: 0.4em 0 0.25em;
+}
+
+.editor-content .tiptap h3 {
+  font-size: 14pt;
+  font-weight: 700;
+  margin: 0.3em 0 0.2em;
+}
+
+.editor-content .tiptap ul,
+.editor-content .tiptap ol {
+  margin: 0.3em 0;
+  padding-left: 1.5em;
+}
+
+.editor-content .tiptap li {
+  margin: 0.1em 0;
+}
+
+.editor-content .tiptap blockquote {
+  border-left: 3px solid #d1d5db;
+  margin: 0.5em 0;
+  padding-left: 1em;
+  color: #6b7280;
+}
+
+.editor-content .tiptap hr {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 0.8em 0;
+}
+
+/* Tables — always full content width, fixed column layout */
+.editor-content .tiptap table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0.5em 0;
+}
+
+.editor-content .tiptap .tableWrapper {
+  overflow: visible;
+  max-width: 100%;
+  position: relative;
+}
+
+.editor-content .tiptap th,
+.editor-content .tiptap td {
+  border: 1px solid #000000;
+  padding: 0.25em 0.5em;
+  vertical-align: top;
+  min-width: 60px;
+  position: relative;
+}
+
+.editor-content .tiptap th {
+  background-color: #f9fafb;
+  font-weight: normal;
+}
+
+:is(.dark) .editor-content .tiptap th {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+:is(.dark) .editor-content .tiptap th,
+:is(.dark) .editor-content .tiptap td {
+  border-color: #000000;
+}
+
+/* Column resize handles */
+.editor-content .tiptap .column-resize-handle {
+  position: absolute;
+  right: -4px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  background-color: hsl(var(--primary) / 0.3);
+  z-index: 20;
+}
+
+.editor-content .tiptap.resize-cursor {
+  cursor: col-resize;
+}
+
+
+/* Selected table cells */
+.editor-content .tiptap .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0.1);
+  pointer-events: none;
+}
+
+/* Per-cell border overrides — transparent red guides in edit mode */
+.editor-content .tiptap td[data-border-top="false"],
+.editor-content .tiptap th[data-border-top="false"] {
+  border-top: 1px dashed rgba(239, 68, 68, 0.35) !important;
+}
+.editor-content .tiptap td[data-border-right="false"],
+.editor-content .tiptap th[data-border-right="false"] {
+  border-right: 1px dashed rgba(239, 68, 68, 0.35) !important;
+}
+.editor-content .tiptap td[data-border-bottom="false"],
+.editor-content .tiptap th[data-border-bottom="false"] {
+  border-bottom: 1px dashed rgba(239, 68, 68, 0.35) !important;
+}
+.editor-content .tiptap td[data-border-left="false"],
+.editor-content .tiptap th[data-border-left="false"] {
+  border-left: 1px dashed rgba(239, 68, 68, 0.35) !important;
+}
+
+/* Template variable inline display — isolate from paragraph text-indent */
+.editor-content .tiptap .react-renderer.node-templateVariable {
+  display: inline;
+  text-indent: 0;
+}
+
+.template-var-inline {
+  display: inline;
+  text-indent: 0;
+}
+
+.template-var-inline > span {
+  text-indent: 0;
+  width: auto;
+}
+
+/* ===== Line-indent spacer (inline-block gap after Shift+Enter) ===== */
+
+.line-indent-spacer {
+  display: inline-block;
+  user-select: none;
+  pointer-events: none;
+  height: 0;
+}
+
+/*
+ * The editor page always represents a physical paper document,
+ * so it must always be white with dark text regardless of theme.
+ */
+.editor-page {
+  background: white !important;
+  color: #1a1a1a;
+}
+
+.editor-content .tiptap {
+  color: #1a1a1a;
+}
+
+/* ===== Pagination spacer (ProseMirror decoration widget) ===== */
+
+.page-break-spacer {
+  user-select: none;
+  position: relative;
+  width: calc(100% + var(--page-pl, 0px) + var(--page-pr, 0px));
+  margin-left: calc(-1 * var(--page-pl, 0px));
+}
+
+.page-edge-bottom {
+  background: white;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.13);
+}
+
+.page-gap {
+  background: color-mix(in oklch, var(--muted) 50%, var(--background));
+}
+
+.page-edge-top {
+  background: white;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 0 -4px 8px -2px rgba(0, 0, 0, 0.13);
+}
+
+/* ===== Ruler ===== */
+
+.editor-ruler-wrap {
+  background: #e8e8e8;
+  border-bottom: 1px solid #ccc;
+}
+
+:is(.dark) .editor-ruler-wrap {
+  background: #2a2a2e;
+  border-bottom-color: #3a3a3e;
+}
+
+.ruler-margin-zone {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+:is(.dark) .ruler-margin-zone {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+
+.editor-ruler {
+  overflow: visible;
+}
+
+.editor-ruler .ruler-tick-path {
+  stroke: rgba(0, 0, 0, 0.35);
+}
+
+:is(.dark) .editor-ruler .ruler-tick-path {
+  stroke: rgba(255, 255, 255, 0.3);
+}
+
+.editor-ruler .ruler-label {
+  fill: rgba(0, 0, 0, 0.55);
+}
+
+:is(.dark) .editor-ruler .ruler-label {
+  fill: rgba(255, 255, 255, 0.5);
+}
+
+.editor-ruler .ruler-marker {
+  fill: #555;
+}
+
+:is(.dark) .editor-ruler .ruler-marker {
+  fill: #aaa;
+}
+
+.editor-ruler .ruler-marker-active {
+  fill: hsl(var(--primary));
+}
+
+.editor-ruler .ruler-marker-idle:hover {
+  fill: hsl(var(--primary) / 0.75);
+}
+

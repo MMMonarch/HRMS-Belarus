@@ -1,0 +1,183 @@
+/* ===== Print styles for the template editor ===== */
+
+@media print {
+  /* ---- 1. Reset body / html ---- */
+  html,
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* ---- 2. Flatten EVERY ancestor from body down to .tiptap ----
+     Chrome refuses to honour break-before/break-after if ANY ancestor
+     has overflow:hidden, display:flex, or a fixed height.
+     We target only <div> and <main> elements so that hidden <aside>,
+     <nav>, <header>, <footer> (different element types) keep their
+     display:none from the rules below.                               */
+  body > div,
+  body > div > div,
+  body > div > div > div,
+  main,
+  main > div,
+  main > div > div,
+  main > div > div > div {
+    display: block !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ---- 3. Hide non-content chrome ----
+     Specificity (0,1,0) always beats the (0,0,N) rules above,
+     so these stay hidden even though ancestors are set to block. */
+  header,
+  nav,
+  aside,
+  footer,
+  .editor-toolbar,
+  .editor-toolbar-row,
+  .editor-sidebar,
+  .editor-tabs,
+  .editor-ruler-wrap,
+  .zoom-control {
+    display: none !important;
+  }
+
+  body > div > div > div > aside {
+    display: none !important;
+  }
+
+  /* ---- 4. Editor-specific containers ---- */
+  .editor-desk {
+    overflow: visible !important;
+    background: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .editor-page-wrapper {
+    transform: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+  }
+
+  .editor-page {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: white !important;
+    display: block !important;
+  }
+
+  .editor-content {
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  /* ---- 5. Pagination spacer → zero-height, break on the spacer itself ---- */
+  .page-break-spacer {
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    display: block !important;
+    break-before: page !important;
+  }
+
+  /* ---- 6. Content typography ---- */
+  .editor-content .tiptap {
+    color: black !important;
+  }
+
+  /* Tables in print — reset prosemirror-tables inline pixel styles */
+  .editor-content .tiptap .tableWrapper {
+    overflow: visible !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  .editor-content .tiptap table {
+    display: table !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+  }
+
+  .editor-content .tiptap colgroup { display: table-column-group !important; }
+  .editor-content .tiptap col { display: table-column !important; }
+  .editor-content .tiptap thead { display: table-header-group !important; }
+  .editor-content .tiptap tbody { display: table-row-group !important; }
+  .editor-content .tiptap tr { display: table-row !important; }
+
+  .editor-content .tiptap th,
+  .editor-content .tiptap td {
+    display: table-cell !important;
+    border-style: solid !important;
+    border-color: #000000 !important;
+  }
+
+  .editor-content .tiptap th {
+    background-color: #f3f4f6 !important;
+    font-weight: normal !important;
+  }
+
+  /* Hide resize handles */
+  .editor-content .tiptap .column-resize-handle {
+    display: none !important;
+  }
+
+  /* Per-cell borders: inline style border-*:none takes priority;
+     override the dashed edit-mode guides to truly hide borders */
+  .editor-content .tiptap td[data-border-top="false"],
+  .editor-content .tiptap th[data-border-top="false"] {
+    border-top: none !important;
+  }
+  .editor-content .tiptap td[data-border-right="false"],
+  .editor-content .tiptap th[data-border-right="false"] {
+    border-right: none !important;
+  }
+  .editor-content .tiptap td[data-border-bottom="false"],
+  .editor-content .tiptap th[data-border-bottom="false"] {
+    border-bottom: none !important;
+  }
+  .editor-content .tiptap td[data-border-left="false"],
+  .editor-content .tiptap th[data-border-left="false"] {
+    border-left: none !important;
+  }
+
+  .react-renderer.node-templateVariable,
+  .template-var-inline {
+    display: inline !important;
+    text-indent: 0 !important;
+  }
+
+  .template-var-inline span {
+    background: none !important;
+    color: black !important;
+    padding: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    text-indent: 0 !important;
+    width: auto !important;
+  }
+
+  /*
+   * @page size and margins are injected dynamically via <style id="editor-page-style">
+   * in EditorPage.tsx so they stay in sync with user's pageSettings.
+   */
+}
