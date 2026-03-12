@@ -1,0 +1,4074 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "afdea339-3970-4404-8b18-a4ced3aee154",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "GET",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5840,
+        896
+      ],
+      "id": "10f3357b-ca1e-4abd-a8ab-e891d20e470a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "afdea339-3970-4404-8b18-a4ced3aee154",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "CREATE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5824,
+        1056
+      ],
+      "id": "bf3a1c88-7243-4d7d-9c3a-e1481ea386e4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "afdea339-3970-4404-8b18-a4ced3aee154",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "DELETE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5824,
+        1216
+      ],
+      "id": "e487eb3e-04f0-43d9-99ed-4d2299460d5a",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://kong:8000/rest/v1/{{ $json.table }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ (() => {\n  // Универсальная обработка для ЛЮБОЙ таблицы\n  const body = $json.body || $json;\n  const data = body.data || body;\n  const metadata = body.metadata || {};\n  \n  // Копируем все данные\n  let insertData = { ...data };\n  \n  // Удаляем только служебные поля, которые генерируются автоматически\n  delete insertData.id; // UUID генерируется автоматически\n  delete insertData.created_at; // Генерируется автоматически\n  delete insertData.updated_at; // Генерируется автоматически\n  \n  // Добавляем метаданные для аудита (если есть)\n  if (metadata.user_id) {\n    // Пытаемся добавить created_by, если такое поле существует в таблице\n    // Если поля нет, Supabase просто проигнорирует его\n    insertData.created_by = metadata.user_id;\n  }\n  \n  // Возвращаем данные как есть - без дополнительной обработки\n  // Каждая таблица сама валидирует свои данные через constraints\n  return JSON.stringify(insertData);\n})() }}",
+        "options": {}
+      },
+      "id": "33bcda50-43e3-4fe4-bfde-9529113e8964",
+      "name": "Supabase: ADD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6768,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "afdea339-3970-4404-8b18-a4ced3aee154",
+              "leftValue": "={{ $json.action }}",
+              "rightValue": "UPDATE",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5824,
+        1376
+      ],
+      "id": "a5e34b2e-5b4d-4da9-92d9-3ec84b1ca502",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "=http://kong:8000/rest/v1/{{ $json.table }}?id=eq.{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5742e04-2648-43d0-95f5-fcc34ce29232",
+      "name": "Supabase: DELETE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6768,
+        1200
+      ],
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "cR2qfc8RmziqPyva",
+          "mode": "list",
+          "cachedResultName": "DATA_API",
+          "cachedResultUrl": "/projects/c5pL0HvBTkYOp03v/datatables/cR2qfc8RmziqPyva"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        6224,
+        1232
+      ],
+      "id": "e0b8b77f-f969-4532-95ec-a6b537915ed6",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6368,
+        896
+      ],
+      "id": "5b2cf500-6eed-4f79-9396-799c2186162c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6560,
+        1040
+      ],
+      "id": "8604efc0-3052-483b-b77c-86172a93129a",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6560,
+        1200
+      ],
+      "id": "10be3bdd-d1f7-47a9-920f-0a730f98f2f9",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {
+          "clashHandling": {
+            "values": {
+              "resolveClash": "preferInput1"
+            }
+          },
+          "fuzzyCompare": false
+        }
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6560,
+        1360
+      ],
+      "id": "9ac0b713-798d-4538-8460-fe1528232427",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "crud",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "dc6a7be6-cafb-44ee-bb31-932eea4540bd",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        5024,
+        1600
+      ],
+      "webhookId": "test-supabase"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const input = item.json;\n\n  const headers = input.headers || {};\n  const authHeader = headers.authorization || headers.Authorization || \"\";\n  const body = input.body || {};\n\n  // JWT\n  const token =\n    (authHeader.startsWith(\"Bearer \")\n      ? authHeader.slice(\"Bearer \".length).trim()\n      : null) ||\n    body.access_token ||\n    null;\n\n  if (!token) {\n    throw new Error('Missing JWT. Provide \"Authorization: Bearer <token>\" or body.access_token');\n  }\n\n  // Action\n  const rawAction = body.action;\n  if (!rawAction) throw new Error(\"Action is required (add, update/edit, delete, get)\");\n  const action = String(rawAction).toUpperCase();\n\n  // Table\n  const table = body.table || body.tag;\n  if (!table) throw new Error(\"Table/tag is required\");\n\n  // payload или data\n  const rawData = body.payload ?? body.data ?? {};\n  const id = body.id || null;\n  const metadata = body.metadata || {};\n\n  const tableMap = {\n    employee: \"employees\",\n    contract: \"contracts\",\n    position: \"positions\",\n    document: \"documents\",\n    branch: \"branches\",\n    org_unit: \"organizational_units\",\n  };\n  const tableName = tableMap[table] || table;\n\n  function cleanData(dataObj) {\n    const cleaned = {};\n    Object.keys(dataObj || {}).forEach((key) => {\n      const value = dataObj[key];\n      if (key === \"id\" || key === \"created_at\" || key === \"updated_at\") return;\n      cleaned[key] = value === \"\" || value === undefined ? null : value;\n    });\n    return cleaned;\n  }\n\n  const requestData = {\n    token,\n    action,\n    table: tableName,\n    id,\n    metadata,\n  };\n\n  // CRUD\n  if (action === \"ADD\" || action === \"CREATE\") {\n    const insertData = cleanData(rawData);\n    if (metadata.user_id) insertData.created_by = metadata.user_id;\n    requestData.data = insertData;\n\n  } else if (action === \"UPDATE\" || action === \"EDIT\") {\n    if (!id) throw new Error(\"ID is required for UPDATE/EDIT action\");\n\n    const updateData = cleanData(rawData);\n    delete updateData.created_at;\n    delete updateData.created_by;\n\n    if (metadata.user_id) updateData.updated_by = metadata.user_id;\n\n    requestData.data = updateData;\n\n  } else if (action === \"DELETE\") {\n    if (!id) throw new Error(\"ID is required for DELETE action\");\n\n  } else if (action === \"GET\" || action === \"READ\" || action === \"LIST\") {\n    // 🔥 ВАЖНО: для GET отправляем именно payload\n    requestData.payload = rawData;\n\n  } else {\n    throw new Error(`Unsupported action: ${action}`);\n  }\n\n  return { json: requestData };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5632,
+        1200
+      ],
+      "id": "61543e71-77ce-4344-acda-b3c15af02e31",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cda3dc2f-8cb5-4fb1-84b9-763c94af31b3",
+      "name": "Supabase: GET",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6768,
+        896
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=http://kong:8000/rest/v1/{{ $json.table }}?id=eq.{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.token }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.data }}",
+        "options": {}
+      },
+      "id": "17a6adfd-045d-49a3-9f34-b2a1bbe63e27",
+      "name": "Supabase: EDIT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6768,
+        1360
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "271f14ba-f253-4994-a40b-239f9dcfdae2",
+              "name": "API",
+              "value": "={{ $json.API }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6208,
+        1040
+      ],
+      "id": "3f2b9742-eb3b-4e22-8d34-a42b953946bf",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // table обязателен\n  const table = (j.table ?? \"\").toString().trim();\n  if (!table) throw new Error(\"Missing table (json.table)\");\n\n  const base = `http://kong:8000/rest/v1/${encodeURIComponent(table)}`;\n\n  // payload нормализуем\n  const payloadRaw = j.payload ?? {};\n  const payload =\n    payloadRaw && typeof payloadRaw === \"object\" && !Array.isArray(payloadRaw)\n      ? payloadRaw\n      : {};\n\n  const parts = [];\n\n  // (опционально) поддержка j.id как fallback, если payload пустой\n  // если не нужно — просто удали этот блок\n  if (\n    Object.keys(payload).length === 0 &&\n    j.id !== null &&\n    j.id !== undefined &&\n    String(j.id).trim() !== \"\"\n  ) {\n    parts.push(`id=eq.${encodeURIComponent(String(j.id).trim())}`);\n  }\n\n  // Универсально: любой ключ из payload -> фильтр\n  for (const [key, value] of Object.entries(payload)) {\n    if (!key) continue;\n\n    // пропускаем \"пустые\"\n    if (value === undefined) continue;\n    if (value === \"\") continue;\n\n    const k = encodeURIComponent(key);\n\n    if (value === null) {\n      parts.push(`${k}=is.null`);\n      continue;\n    }\n\n    // массив -> in.(a,b,c)\n    if (Array.isArray(value)) {\n      const arr = value\n        .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n        .map((v) => encodeURIComponent(String(v).trim()));\n      if (arr.length) parts.push(`${k}=in.(${arr.join(\",\")})`);\n      continue;\n    }\n\n    // boolean/number/string -> eq.<value>\n    const v = String(value).trim();\n    if (v !== \"\") parts.push(`${k}=eq.${encodeURIComponent(v)}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // headers для Supabase через Kong\n  const apiKey = j.API ?? j.apikey ?? null;\n  const token = j.token ?? null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.API)\");\n  if (!token) throw new Error(\"Missing user token (json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        apikey: apiKey,\n        Authorization: `Bearer ${token}`,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6560,
+        896
+      ],
+      "id": "2baa18fb-c4d5-4734-b536-71d666640874",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "95ad2737-ebaa-4c6d-af7a-65424965ffb2",
+              "leftValue": "={{ $json.body.table }}",
+              "rightValue": "EDITOR",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        5280,
+        1600
+      ],
+      "id": "30144827-3c1a-462a-a18d-8fe21c64f6e1",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "url": "=http://kong:8000/rest/v1/rpc/get_schema_tables",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6fec516b-f2e6-4274-be18-239639f91361",
+      "name": "Supabase: GET3",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6800,
+        1776
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6512,
+        1776
+      ],
+      "id": "0e1d171e-5ac5-4481-a10d-157e5d6347e9",
+      "name": "Merge5"
+    },
+    {
+      "parameters": {
+        "content": "## Схема добавление редактирование удаление получение данных \n",
+        "height": 736,
+        "width": 1376,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5600,
+        832
+      ],
+      "typeVersion": 1,
+      "id": "ebf80c40-46fc-4115-8877-b70828fe0caf",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Режим шаблона для редактора. Присылает только переменные из базы.",
+        "height": 352,
+        "width": 608
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        6368,
+        1616
+      ],
+      "typeVersion": 1,
+      "id": "0a5acc93-3f71-40de-94d8-6bf22fd7632d",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.payload.type }}",
+                    "rightValue": "templates",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d710878c-8ade-4190-8c10-681928593d17"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "ad1809b1-dd80-4b5e-8833-8e2c464e02e5",
+                    "leftValue": "={{ $json.body.payload.type }}",
+                    "rightValue": "order",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        5568,
+        2160
+      ],
+      "id": "68864005-e3c0-407c-bf0c-0a3031499c2b",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8ad6bd0f-3e8c-4a24-b428-2177a05c29af",
+      "name": "Supabase: GET4",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6480,
+        3232
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json ?? {};\n  const body = j.body ?? {};\n  const headersIn = j.headers ?? {};\n\n  // --- ЖЁСТКО: только таблица order_items ---\n  const table = \"order_items\";\n  const baseUrl = `http://kong:8000/rest/v1/${table}`;\n\n  const payload = body.payload ?? {};\n\n  // payload.id трактуем как order_id\n  const orderId = (payload.id ?? \"\").toString().trim();\n  const branchId = (payload.branch_id ?? \"\").toString().trim();\n\n  if (!orderId) throw new Error(\"Missing payload.id (used as order_id)\");\n  if (!branchId) throw new Error(\"Missing payload.branch_id\");\n\n  // Без лимита\n  const url =\n    `${baseUrl}` +\n    `?order_id=eq.${encodeURIComponent(orderId)}` +\n    `&branch_id=eq.${encodeURIComponent(branchId)}` +\n    `&select=*`;\n\n  // API key (передавай в body.API или j.API, либо вставь руками)\n  const apiKey = j.API || body.API || \"PASTE_YOUR_SUPABASE_KEY_HERE\";\n  if (!apiKey) throw new Error(\"Missing API key\");\n\n  // Token\n  let token =\n    body.access_token ||\n    headersIn.authorization ||\n    headersIn.Authorization;\n\n  if (!token) throw new Error(\"Missing access token\");\n\n  token = token.toString().trim();\n  const authHeader = token.toLowerCase().startsWith(\"bearer \")\n    ? token\n    : `Bearer ${token}`;\n\n  return {\n    json: {\n      url,\n      API: apiKey,\n      headers: {\n        apikey: apiKey,\n        Authorization: authHeader,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5808,
+        3232
+      ],
+      "id": "3480a16f-2299-490b-b8bd-5fcd7d97a0d5",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        6240,
+        3248
+      ],
+      "id": "5bd78a7b-85e4-4860-9b4f-e3abf090f088",
+      "name": "Merge6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a49214d-84d3-4149-873c-fae35d1c82cf",
+              "name": "person_id",
+              "value": "={{ $json.person_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6752,
+        2304
+      ],
+      "id": "012e8f7f-e0ad-4dbe-8df7-c22f0aa8525b",
+      "name": "Person"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "person_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        6912,
+        2304
+      ],
+      "id": "319d5ae9-961e-49aa-8879-823690bc2663",
+      "name": "Aggregate3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        7136,
+        2560
+      ],
+      "id": "c823d38e-c83a-4413-96b0-aa3cd7d79106",
+      "name": "Remove Duplicates1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb6e6e03-7304-4409-ae82-dbb51ec49dbb",
+              "name": "headers",
+              "value": "={{ $json.headers }}",
+              "type": "object"
+            },
+            {
+              "id": "478097bd-1371-4e94-b9a5-7ef1c55a7936",
+              "name": "API",
+              "value": "={{ $json.API }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        11360,
+        2080
+      ],
+      "id": "59a07048-db18-4fd7-8e0a-8f07dcca2304",
+      "name": "API"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // Таблица фиксированная\n  const base = \"http://kong:8000/rest/v1/persons\";\n\n  const parts = [];\n\n  // 1) person_id -> id=in.(...)\n  if (Array.isArray(j.person_id)) {\n    const arr = j.person_id\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) parts.push(`id=in.(${arr.join(\",\")})`);\n  }\n\n  // 2) branch_id -> branch_id=eq.<...>\n  if (j.branch_id !== undefined && j.branch_id !== null && String(j.branch_id).trim() !== \"\") {\n    parts.push(`branch_id=eq.${encodeURIComponent(String(j.branch_id).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // 3) Заголовки (приоритет json.headers)\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization) throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8640,
+        2336
+      ],
+      "id": "f9a609b6-78e0-4b53-8381-2e4a8ab65894",
+      "name": "Code in JavaScript19"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7120,
+        2320
+      ],
+      "id": "7197d5db-5ae1-4da3-b272-f3106df75a3a",
+      "name": "Merge21"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7680,
+        2336
+      ],
+      "id": "75c8a14f-226a-4673-9fa8-ce12119c79d6",
+      "name": "Merge22"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "07ddf849-24d6-4140-b6a4-706631758fbb",
+      "name": "Supabase: GET9",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8800,
+        2336
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3f296ba-ff0d-4114-81bd-9a9a385d0327",
+              "name": "branch_id",
+              "value": "={{ $json.branch_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6768,
+        2560
+      ],
+      "id": "7e571b68-6e4c-4b86-9715-cd07f970ed93",
+      "name": "branch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b0021f1-9f02-4b16-b8c8-72099e1ef996",
+              "name": "payload.positionId",
+              "value": "={{ $json.payload.positionId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6752,
+        2864
+      ],
+      "id": "62b6ee3f-dd3a-45b8-8cb4-1e7eac0c9ee5",
+      "name": "positionId"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "payload.positionId"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        7168,
+        2864
+      ],
+      "id": "94b343ac-2103-449a-b46c-9fc97dfdab41",
+      "name": "Aggregate4"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        6976,
+        2864
+      ],
+      "id": "f85710f9-c9fd-4663-b481-782dd03ca93d",
+      "name": "Remove Duplicates2"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // База для таблицы positions\n  const base = \"http://kong:8000/rest/v1/positions\";\n\n  const parts = [];\n\n  // 1) positionId[] -> id=in.(...)\n  if (Array.isArray(j.positionId)) {\n    const arr = j.positionId\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) parts.push(`id=in.(${arr.join(\",\")})`);\n  }\n\n  // 2) branch_id -> branch_id=eq.<...>\n  if (j.branch_id !== undefined && j.branch_id !== null && String(j.branch_id).trim() !== \"\") {\n    parts.push(`branch_id=eq.${encodeURIComponent(String(j.branch_id).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // 3) Заголовки (приоритет json.headers)\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization) throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8624,
+        2928
+      ],
+      "id": "de12302a-b067-45d4-a12a-aee802638ba3",
+      "name": "Code in JavaScript20"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7936,
+        2912
+      ],
+      "id": "2c969fdd-983e-4d39-9b7c-31caa3e20285",
+      "name": "Merge24"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        8160,
+        2928
+      ],
+      "id": "4109fe90-b967-4d50-a589-e1664fb9ae36",
+      "name": "Merge25"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "37984f41-2f93-464a-af66-f4e8e05b10ce",
+      "name": "Supabase: GET10",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8768,
+        2928
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "jsCode": "// items = [{json:{...}}, {json:{...}}, ...]\nconst result = {};\n\nitems.forEach((item, index) => {\n  const num = index + 1;\n  const key = `p${num}`;\n\n  result[key] = {\n    ...item.json,\n    number: num\n  };\n});\n\nreturn [{ json: result }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8080,
+        3840
+      ],
+      "id": "e6d238f9-0d87-4411-9383-f053b9e8f5e0",
+      "name": "Code in JavaScript24"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me1",
+      "typeVersion": 1,
+      "position": [
+        7680,
+        2704
+      ],
+      "id": "4727b45f-c838-4738-8a18-3ef8ae94754f",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        7184,
+        3152
+      ],
+      "id": "d18a6410-30eb-4034-9b90-f79825ee321b",
+      "name": "Remove Duplicates3"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "payload.departmentId"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        7392,
+        3152
+      ],
+      "id": "f865d0c7-e524-46cc-8364-eb4db0a4fc37",
+      "name": "Aggregate5"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7632,
+        3168
+      ],
+      "id": "7f75bea2-8b57-4da6-a45e-030ec2c36b27",
+      "name": "Merge26"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me2",
+      "typeVersion": 1,
+      "position": [
+        7408,
+        2752
+      ],
+      "id": "c5668a70-75f9-41c7-8c36-daaa30a5b5da",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7888,
+        3184
+      ],
+      "id": "134ed8de-fc93-4e98-b818-39a312bacba3",
+      "name": "Merge27"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // База для таблицы departments\n  const base = \"http://kong:8000/rest/v1/departments\";\n\n  const parts = [];\n\n  // 1) departmentId[] -> id=in.(...)\n  if (Array.isArray(j.departmentId)) {\n    const arr = j.departmentId\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) parts.push(`id=in.(${arr.join(\",\")})`);\n  }\n\n  // 2) branch_id -> branch_id=eq.<...>\n  if (j.branch_id !== undefined && j.branch_id !== null && String(j.branch_id).trim() !== \"\") {\n    parts.push(`branch_id=eq.${encodeURIComponent(String(j.branch_id).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // 3) Заголовки (приоритет json.headers)\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization) throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8624,
+        3184
+      ],
+      "id": "44b736cf-f3e8-4611-9791-85c081eed8f0",
+      "name": "Code in JavaScript25"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d91fdfe7-2e50-46ef-8bee-fbfb4c3ef144",
+      "name": "Supabase: GET11",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8800,
+        3184
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        7232,
+        3552
+      ],
+      "id": "f0ce43c6-13e7-40a0-ae77-fdddab5f2c28",
+      "name": "Remove Duplicates4"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "order_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        7424,
+        3552
+      ],
+      "id": "c954e50f-4918-4314-9a2a-f6c4ef97c835",
+      "name": "Aggregate6"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7696,
+        3552
+      ],
+      "id": "6bc41556-61a7-4d96-808d-d41aadab9205",
+      "name": "Merge28"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        8144,
+        3568
+      ],
+      "id": "7c1f24da-1491-4df7-a477-6cf3ad0934cb",
+      "name": "Merge29"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // База для таблицы orders\n  const base = \"http://kong:8000/rest/v1/orders\";\n\n  const parts = [];\n\n  // 1) order_id[] -> id=in.(...)\n  if (Array.isArray(j.order_id)) {\n    const arr = j.order_id\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) parts.push(`id=in.(${arr.join(\",\")})`);\n  }\n\n  // 2) branch_id -> branch_id=eq.<...>\n  if (j.branch_id !== undefined && j.branch_id !== null && String(j.branch_id).trim() !== \"\") {\n    parts.push(`branch_id=eq.${encodeURIComponent(String(j.branch_id).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // 3) Заголовки (приоритет json.headers)\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization) throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8608,
+        3552
+      ],
+      "id": "8b16e8a1-2254-4e91-9cb2-6fa2defeb497",
+      "name": "Code in JavaScript26"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5c490de5-93c4-41c4-a56f-db31d00f3583",
+      "name": "Supabase: GET12",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8896,
+        3552
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "print_output",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9296,
+        3568
+      ],
+      "id": "be874ab7-03b3-4c19-84cd-603fa637043d",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "branch_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        7456,
+        2512
+      ],
+      "id": "496292e9-68f4-4513-b96f-7a22705a2665",
+      "name": "Aggregate8"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        7680,
+        2528
+      ],
+      "id": "61930952-d89c-4267-9188-97ae6c2104c3",
+      "name": "Merge30"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // Таблица branches\n  const base = \"http://kong:8000/rest/v1/branches\";\n  const parts = [];\n\n  // branch_id[] -> id=in.(...)\n  if (Array.isArray(j.branch_id)) {\n    const arr = j.branch_id\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) parts.push(`id=in.(${arr.join(\",\")})`);\n  } else if (j.branch_id !== undefined && j.branch_id !== null && String(j.branch_id).trim() !== \"\") {\n    // если вдруг branch_id пришёл строкой\n    parts.push(`id=eq.${encodeURIComponent(String(j.branch_id).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // Заголовки (приоритет json.headers)\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization) throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8640,
+        2544
+      ],
+      "id": "59a846db-fb1a-4443-89ef-396fff78f79e",
+      "name": "Code in JavaScript27"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6da1fba1-86d3-4e71-b9ad-4dfeb5101954",
+      "name": "Supabase: GET13",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8800,
+        2544
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "83edb86b-2735-406f-ade6-b6b42f3478ca",
+              "name": "order_id",
+              "value": "={{ $json.order_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6752,
+        3552
+      ],
+      "id": "509b348a-052c-4c33-abff-c424e9268ae9",
+      "name": "order"
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $input.all().map((item) => ({ ...(item.json || {}) }));\n\nreturn [\n  {\n    json: {\n     \n        persons: arr, // массив людей\n      \n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9856,
+        2336
+      ],
+      "id": "df5c9630-9cf2-4e5f-bf17-41f68a978cde",
+      "name": "Code in JavaScript28"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nconst arr = $input.all().map((item) => ({ ...(item.json || {}) }));\n\nreturn [\n  {\n    json: {\n     \n        branches: arr,\n      \n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8960,
+        2544
+      ],
+      "id": "bfc86011-e901-471e-9214-8f702ef0aa4f",
+      "name": "Code in JavaScript29"
+    },
+    {
+      "parameters": {
+        "jsCode": "const arr = $input.all().map((item) => ({ ...(item.json || {}) }));\n\nreturn [\n  {\n    json: {\n     \n        positions: arr,\n      \n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9376,
+        2928
+      ],
+      "id": "28ac433b-5758-4475-bd28-fd8f521a416c",
+      "name": "Code in JavaScript30"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst arr = $input.all().map((item) => ({ ...(item.json || {}) }));\n\nreturn [\n  {\n    json: {\n     \n        departments: arr,\n      \n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9440,
+        3184
+      ],
+      "id": "845437b1-5f2e-4c4b-9046-a3dc227a4e1d",
+      "name": "Code in JavaScript31"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nconst arr = $input.all().map((item) => ({ ...(item.json || {}) }));\n\nreturn [\n  {\n    json: {\n     \n        orders: arr,\n      \n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9280,
+        3392
+      ],
+      "id": "adcd5442-ea40-4136-bf71-072f40c92ea7",
+      "name": "Code in JavaScript32"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me3",
+      "typeVersion": 1,
+      "position": [
+        6496,
+        3888
+      ],
+      "id": "29335f89-daa0-414f-8274-b983e13b0b95",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        9888,
+        3872
+      ],
+      "id": "d4ac20a5-1544-45b4-98a9-a9e543c2a8bc",
+      "name": "Merge31"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Вход: { persons: [...], p1:{person_id...}, p2:{...}, ... }\n// Выход: { p1:{..., persons:{...}}, p2:{..., persons:{...}}, ... }\n\nconst input = $input.first().json || {};\n\nconst personsArr = Array.isArray(input.persons) ? input.persons : [];\n\n// Индексируем persons по id для быстрого поиска\nconst personsById = new Map(\n  personsArr\n    .filter(p => p && typeof p === \"object\" && p.id != null)\n    .map(p => [String(p.id), p])\n);\n\n// Собираем результат только с p{i}\nconst out = {};\n\nfor (const [key, val] of Object.entries(input)) {\n  if (!/^p\\d+$/.test(key)) continue;           // берем только p1, p2, p3...\n  if (!val || typeof val !== \"object\") {\n    out[key] = val;\n    continue;\n  }\n\n  const personId = val.person_id != null ? String(val.person_id) : null;\n  const person = personId ? personsById.get(personId) : undefined;\n\n  out[key] = {\n    ...val,\n    persons: person ?? null, // если не нашли — null\n  };\n}\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10096,
+        3872
+      ],
+      "id": "122cdb7d-a815-4a29-8e67-bff55a1327aa",
+      "name": "Code in JavaScript33"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        10624,
+        3856
+      ],
+      "id": "712751d3-db9c-4486-9eef-e78db58b878c",
+      "name": "Merge32"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Вход: { positions: [...], p1:{payload:{positionId}}, p2:{...}, ... }\n// Выход: { p1:{..., positions:{...}}, p2:{..., positions:{...}}, ... }\n\nconst input = $input.first().json || {};\n\nconst positionsArr = Array.isArray(input.positions) ? input.positions : [];\n\n// Индексируем positions по id\nconst positionsById = new Map(\n  positionsArr\n    .filter(p => p && typeof p === \"object\" && p.id != null)\n    .map(p => [String(p.id), p])\n);\n\nconst out = {};\n\nfor (const [key, val] of Object.entries(input)) {\n  if (!/^p\\d+$/.test(key)) continue; // только p1, p2, p3...\n  if (!val || typeof val !== \"object\") {\n    out[key] = val;\n    continue;\n  }\n\n  const positionId = val?.payload?.positionId != null ? String(val.payload.positionId) : null;\n  const position = positionId ? positionsById.get(positionId) : undefined;\n\n  out[key] = {\n    ...val,\n    positions: position ?? null, // если не нашли — null\n  };\n}\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10832,
+        3856
+      ],
+      "id": "56d7fcd4-6178-40f4-919b-b72a3418d37f",
+      "name": "Code in JavaScript34"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11488,
+        3840
+      ],
+      "id": "7653cf19-7851-472c-8c77-3c1332ac9939",
+      "name": "Merge33"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e1306f8-c30e-4f07-ac06-a8ca01954441",
+              "name": "payload.departmentId",
+              "value": "={{ $json.payload.departmentId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6752,
+        3152
+      ],
+      "id": "f8b18adf-4695-4e8a-8501-e8e9fb9503de",
+      "name": "departmentId"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n// Вход: { departments: [...], p1:{payload:{departmentId}}, p2:{...}, ... }\n// Выход: { p1:{..., departments:{...}}, p2:{..., departments:{...}}, ... }\n\nconst input = $input.first().json || {};\n\nconst depsArr = Array.isArray(input.departments) ? input.departments : [];\n\n// Индексируем departments по id\nconst depsById = new Map(\n  depsArr\n    .filter(d => d && typeof d === \"object\" && d.id != null)\n    .map(d => [String(d.id), d])\n);\n\nconst out = {};\n\nfor (const [key, val] of Object.entries(input)) {\n  if (!/^p\\d+$/.test(key)) continue; // только p1, p2, p3...\n  if (!val || typeof val !== \"object\") {\n    out[key] = val;\n    continue;\n  }\n\n  const depId = val?.payload?.departmentId != null ? String(val.payload.departmentId) : null;\n  const dep = depId ? depsById.get(depId) : undefined;\n\n  out[key] = {\n    ...val,\n    departments: dep ?? null, // если не нашли — null\n  };\n}\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11712,
+        3840
+      ],
+      "id": "4dafb1d5-93f4-457e-9d9f-77fc665edb37",
+      "name": "Code in JavaScript35"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11952,
+        3792
+      ],
+      "id": "5f246c75-3149-4039-82fd-3bdc821f34bd",
+      "name": "Merge34"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вход: { orders: [...], p1: {...}, p2: {...}, ... }\n// Выход: { orders: [...], p1: {...}, p2: {...}, ... } (orders первым)\n\nconst input = $input.first().json || {};\n\nconst out = {};\n\n// 1) orders первым\nif (\"orders\" in input) out.orders = input.orders;\n\n// 2) затем p1, p2, p3...\nObject.keys(input)\n  .filter((k) => /^p\\d+$/.test(k))\n  .sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))\n  .forEach((k) => {\n    out[k] = input[k];\n  });\n\n// (опционально) если надо сохранить еще какие-то поля между orders и p* — скажи\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12160,
+        3792
+      ],
+      "id": "efc6a741-cee9-4a20-891b-3375f1d3c02d",
+      "name": "Code in JavaScript36"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        12416,
+        3776
+      ],
+      "id": "96f072c7-c2ae-4ef8-8af5-d33070154d95",
+      "name": "Merge35"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вход: { branches: [...], orders: [...], p1: {...}, p2: {...}, ... }\n// Выход: { branches: [...], orders: [...], p1: {...}, p2: {...}, ... } (branches перед orders)\n\nconst input = $input.first().json || {};\n\nconst out = {};\n\n// 1) branches первым\nif (\"branches\" in input) out.branches = input.branches;\n\n// 2) потом orders\nif (\"orders\" in input) out.orders = input.orders;\n\n// 3) потом p1, p2, p3...\nObject.keys(input)\n  .filter((k) => /^p\\d+$/.test(k))\n  .sort((a, b) => Number(a.slice(1)) - Number(b.slice(1)))\n  .forEach((k) => {\n    out[k] = input[k];\n  });\n\nreturn [{ json: out }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12608,
+        3776
+      ],
+      "id": "bda6746e-444a-4963-9fe9-832f8ae05e45",
+      "name": "Code in JavaScript37"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json || {};\n\nreturn [\n  {\n    json: {\n      variableData: input,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12816,
+        3776
+      ],
+      "id": "10e999b3-53d7-4f7a-86ff-5117a16fda28",
+      "name": "Code in JavaScript38"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json || {};\nconst variableData = input.variableData || {};\n\n// --- helpers ---\nfunction isIsoDate(v) {\n  if (typeof v !== \"string\") return false;\n  return /^\\d{4}-\\d{2}-\\d{2}(?:[T\\s]\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})?)?$/.test(v);\n}\n\nfunction inferType(v) {\n  if (v === null || v === undefined) return \"string\";\n  if (typeof v === \"number\") return \"number\";\n  if (typeof v === \"boolean\") return \"boolean\";\n  if (typeof v === \"string\" && isIsoDate(v)) return \"date\";\n  return \"string\";\n}\n\nfunction groupFor(path) {\n  if (!path) return \"root\";\n\n  const parts = path.split(\".\");\n\n  // p2.state -> p2\n  if (/^p\\d+$/.test(parts[0]) && parts.length === 2) {\n    return parts[0];\n  }\n\n  // p1.departments.id -> departments\n  if (/^p\\d+$/.test(parts[0]) && parts.length >= 3) {\n    return parts[1];\n  }\n\n  // branches.city -> branches\n  return parts[0];\n}\n\nconst variableSchema = [];\n\nfunction pushSchema(path, value) {\n  const t = inferType(value);\n  const e = {\n    path,\n    label: path,\n    type: t,\n    group: groupFor(path),\n  };\n  if (t === \"date\") e.format = \"dd.MM.yyyy\";\n  variableSchema.push(e);\n}\n\nfunction walk(node, basePath) {\n  if (node === null || node === undefined) {\n    if (basePath) pushSchema(basePath, node);\n    return;\n  }\n\n  if (Array.isArray(node)) {\n    if (node.length === 0) return;\n\n    const first = node[0];\n\n    if (first === null || [\"string\", \"number\", \"boolean\"].includes(typeof first)) {\n      pushSchema(basePath, first);\n      return;\n    }\n\n    walk(first, basePath);\n    return;\n  }\n\n  if (typeof node === \"object\") {\n    for (const [k, v] of Object.entries(node)) {\n      const nextPath = basePath ? `${basePath}.${k}` : k;\n\n      if (v !== null && typeof v === \"object\") {\n        walk(v, nextPath);\n      } else {\n        pushSchema(nextPath, v);\n      }\n    }\n    return;\n  }\n\n  pushSchema(basePath, node);\n}\n\nwalk(variableData, \"\");\n\n// сортировка\nfunction sortKey(p) {\n  const s = p.path;\n  if (s.startsWith(\"branches.\")) return `0_${s}`;\n  if (s.startsWith(\"orders.\")) return `1_${s}`;\n  const m = s.match(/^p(\\d+)\\./);\n  if (m) return `2_${String(m[1]).padStart(3, \"0\")}_${s}`;\n  return `9_${s}`;\n}\n\nvariableSchema.sort((a, b) =>\n  sortKey(a) < sortKey(b) ? -1 : sortKey(a) > sortKey(b) ? 1 : 0\n);\n\nreturn [{\n  json: {\n    variableSchema,\n    variableData,\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13056,
+        3776
+      ],
+      "id": "58eb25c7-e768-482d-b368-5600c500a237",
+      "name": "Code in JavaScript39"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "\n  {\n    \"variableSchema\": [\n      \n\t  {\n        \"path\": \"branches.name\",\n        \"label\": \"Имя филиала\",\n        \"type\": \"string\",\n        \"group\": \"Филиал\"\n      },\n      {\n        \"path\": \"orders.order_date\",\n        \"label\": \"Дата приказа\",\n        \"type\": \"date\",\n        \"group\": \"Приказ\",\n        \"format\": \"dd.MM.yyyy\"\n      },\n      {\n        \"path\": \"orders.reg_number\",\n        \"label\": \"Номер приказа\",\n        \"type\": \"string\",\n        \"group\": \"Приказ\"\n      },\n      {\n        \"path\": \"orders.title\",\n        \"label\": \"Имя приказа\",\n        \"type\": \"string\",\n        \"group\": \"Приказ\"\n      },\n      {\n        \"path\": \"p1.number\",\n        \"label\": \"Пункт Номер\",\n        \"type\": \"number\", \n        \"group\": \"Пункт\"\n      },\n   {\n        \"path\": \"p1.persons.first_name\",\n        \"label\": \"Имя\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_initial\",\n        \"label\": \"Первая буква имени А.\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n\t  {\n        \"path\": \"p1.persons.last_name\",\n        \"label\": \"Фамилия\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_upper\",\n        \"label\": \"Фамилия (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n\t  {\n        \"path\": \"p1.persons.patronymic\",\n        \"label\": \"Отчество\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_initial\",\n        \"label\": \"Первая буква отчетства А.\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.birth_date\",\n        \"label\": \"Дата рождения\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.contact_email\",\n        \"label\": \"Email сотрудника\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.contact_phone\",\n        \"label\": \"Телефон сотрудника\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.positions.name\",\n        \"label\": \"Имя должности\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.departments.name\",\n        \"label\": \"Имя отдела\",\n        \"type\": \"string\",\n        \"group\": \"Сотрудник\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_accusative\",\n        \"label\": \"Фамилия в винительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_accusative_upper\",\n        \"label\": \"Фамилия в винительном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_dative\",\n        \"label\": \"Фамилия в дательном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_dative_upper\",\n        \"label\": \"Фамилия в дательном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_genitive\",\n        \"label\": \"Фамилия в родительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_genitive_upper\",\n        \"label\": \"Фамилия в родительном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_instrumental\",\n        \"label\": \"Фамилия в творительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_instrumental_upper\",\n        \"label\": \"Фамилия в творительном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_nominative\",\n        \"label\": \"Фамилия в именительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_nominative_upper\",\n        \"label\": \"Фамилия в именительном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.last_name_prepositional\",\n        \"label\": \"Фамилия в предложном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n       {\n        \"path\": \"p1.persons.last_name_prepositional_upper\",\n        \"label\": \"Фамилия в предложном падеже (ПРОПИСНЫМИ)\",\n        \"type\": \"string\",\n        \"group\": \"Фамилия в падеже\"\n      },\n       {\n        \"path\": \"p1.persons.first_name_accusative\",\n        \"label\": \"Имя в винительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_dative\",\n        \"label\": \"Имя в дательном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_genitive\",\n        \"label\": \"Имя в родительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_initial\",\n        \"label\": \"Инициал имени\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_instrumental\",\n        \"label\": \"Имя в творительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_nominative\",\n        \"label\": \"Имя в именительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.first_name_prepositional\",\n        \"label\": \"Имя в предложном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Имя в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_accusative\",\n        \"label\": \"Отчество в винительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_dative\",\n        \"label\": \"Отчество в дательном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_genitive\",\n        \"label\": \"Отчество в родительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_instrumental\",\n        \"label\": \"Отчество в творительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_nominative\",\n        \"label\": \"Отчество в именительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n      {\n        \"path\": \"p1.persons.patronymic_prepositional\",\n        \"label\": \"Отчество в предложном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отчество в падеже\"\n      },\n\t   {\n        \"path\": \"p1.positions.name_accusative\",\n        \"label\": \"Название должности в винительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_accusative_lower\",\n        \"label\": \"Название должности в винительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_dative\",\n        \"label\": \"Название должности в дательном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_dative_lower\",\n        \"label\": \"Название должности в дательном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_genitive\",\n        \"label\": \"Название должности в родительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_genitive_lower\",\n        \"label\": \"Название должности в родительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_instrumental\",\n        \"label\": \"Название должности в родительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_instrumental_lower\",\n        \"label\": \"Название должности в творительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_nominative\",\n        \"label\": \"Название должности в именительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_nominative_lower\",\n        \"label\": \"Название должности в именительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_prepositional\",\n        \"label\": \"Название должности в предложном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n      {\n        \"path\": \"p1.positions.name_prepositional_lower\",\n        \"label\": \"Название должности в предложном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Должность в падеже\"\n      },\n\t  {\n        \"path\": \"p1.departments.name_accusative\",\n        \"label\": \"Название подразделения в винительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_accusative_lower\",\n        \"label\": \"Название подразделения в винительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_dative\",\n        \"label\": \"Название подразделения в дательном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_dative_lower\",\n        \"label\": \"Название подразделения в дательном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_genitive\",\n        \"label\": \"Название подразделения в родительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_genitive_lower\",\n        \"label\": \"Название подразделения в родительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_instrumental\",\n        \"label\": \"Название подразделения в творительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_instrumental_lower\",\n        \"label\": \"Название подразделения в творительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_nominative\",\n        \"label\": \"Название подразделения в именительном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_nominative_lower\",\n        \"label\": \"Название подразделения в именительном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_prepositional\",\n        \"label\": \"Название подразделения в предложном падеже\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      },\n      {\n        \"path\": \"p1.departments.name_prepositional_lower\",\n        \"label\": \"Название подразделения в предложном падеже (строчными буквами)\",\n        \"type\": \"string\",\n        \"group\": \"Отдел в падеже\"\n      }\n    ],\n    \"variableData\": {\n      \"branches\": [\n        {\n          \"id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n          \"organization_id\": \"95fea299-5aea-425d-933b-6f3853836273\",\n          \"name\": \"Филиал 1\",\n          \"created_at\": \"2026-02-02T21:57:46.872399+00:00\",\n          \"updated_at\": \"2026-02-02T21:57:46.872399+00:00\",\n          \"created_by\": null,\n          \"updated_by\": null\n        }\n      ],\n      \"orders\": [\n        {\n          \"id\": \"d4feaca9-634c-4c2d-83f6-0e6216ba2039\",\n          \"branch_id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n          \"order_register_id\": null,\n          \"order_date\": \"2026-02-12\",\n          \"effective_date\": null,\n          \"reg_seq\": null,\n          \"reg_number\": \"1-к\",\n          \"status\": \"draft\",\n          \"title\": \"Приказ о приеме\",\n          \"note\": null,\n          \"created_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n          \"created_at\": \"2026-02-12T11:14:40.455575+00:00\",\n          \"updated_at\": \"2026-02-28T09:54:17.711224+00:00\",\n          \"updated_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n          \"template_id\": \"4ee3fca0-9377-40f0-b0dd-9152fe9b0deb\"\n        }\n      ],\n      \"p1\": {\n\t    \"number\": 1,\n        \"id\": \"cbccbf53-a5c0-4215-9f63-0052129ec87c\",\n        \"branch_id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n        \"order_id\": \"d4feaca9-634c-4c2d-83f6-0e6216ba2039\",\n        \"line_no\": 3,\n        \"person_id\": \"ee8be05c-e321-4200-bf43-585c58b84299\",\n        \"employment_id\": \"91705ceb-71b7-4e48-8c6e-b9782006c400\",\n        \"reverses_item_id\": null,\n        \"reversed_by_item_id\": null,\n        \"effective_from\": \"2026-02-12\",\n        \"effective_to\": null,\n        \"payload\": {\n          \"body\": \"\",\n          \"leaveDays\": 0,\n          \"validFrom\": \"2026-02-12\",\n          \"positionId\": \"a083b9bb-d944-4734-874a-470d5b61e949\",\n          \"templateId\": \"e6ba5967-9e96-416f-9957-8cae4bc6b95a\",\n          \"contractType\": \"employment_contract\",\n          \"departmentId\": \"eafec820-0fb3-43d7-b469-03126a842b4d\",\n          \"contractTermKind\": \"indefinite\",\n          \"contractTemplateId\": \"93b49fbd-205e-4990-87e3-82a42d015fd5\"\n        },\n        \"contract_id\": \"011f81e1-0d9d-43dc-acd4-589aaac1e4db\",\n        \"contract_amendment_id\": null,\n        \"state\": \"applied\",\n        \"applied_at\": \"2026-02-28T07:31:58.799+00:00\",\n        \"applied_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n        \"voided_at\": null,\n        \"voided_by\": null,\n        \"void_reason\": null,\n        \"created_at\": \"2026-02-28T07:31:18.45735+00:00\",\n        \"updated_at\": \"2026-02-28T07:31:58.876383+00:00\",\n        \"created_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n        \"updated_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n        \"item_type_number\": 1,\n        \"item_subtype_id\": null,\n        \"persons\": {\n          \"id\": \"ee8be05c-e321-4200-bf43-585c58b84299\",\n          \"branch_id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n          \"person_no\": null,\n          \"last_name\": \"Смирнов\",\n          \"first_name\": \"Давид\",\n          \"patronymic\": \"Артёмович\",\n          \"birth_date\": null,\n          \"gender\": null,\n          \"citizenship_id\": null,\n          \"contact_phone\": null,\n          \"contact_email\": null,\n          \"created_at\": \"2026-02-28T07:31:06.65184+00:00\",\n          \"updated_at\": \"2026-03-09T17:38:13.848602+00:00\",\n          \"created_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n          \"updated_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n          \"id_number\": null,\n          \"photo_path\": null,\n          \"first_name_initial\": \"Д.\",\n          \"patronymic_initial\": \"А.\",\n          \"gender_detected\": \"male\",\n          \"first_name_nominative\": \"Давид\",\n          \"first_name_genitive\": \"Давида\",\n          \"first_name_dative\": \"Давиду\",\n          \"first_name_accusative\": \"Давида\",\n          \"first_name_instrumental\": \"Давидом\",\n          \"first_name_prepositional\": \"Давиде\",\n          \"patronymic_nominative\": \"Артёмович\",\n          \"patronymic_genitive\": \"Артёмовича\",\n          \"patronymic_dative\": \"Артёмовичу\",\n          \"patronymic_accusative\": \"Артёмовича\",\n          \"patronymic_instrumental\": \"Артёмовичем\",\n          \"patronymic_prepositional\": \"Артёмовиче\",\n          \"last_name_nominative\": \"Смирнов\",\n          \"last_name_genitive\": \"Смирнова\",\n          \"last_name_dative\": \"Смирнову\",\n          \"last_name_accusative\": \"Смирнова\",\n          \"last_name_instrumental\": \"Смирновым\",\n          \"last_name_prepositional\": \"Смирнове\",\n          \"last_name_nominative_upper\": \"СМИРНОВ\",\n          \"last_name_genitive_upper\": \"СМИРНОВА\",\n          \"last_name_dative_upper\": \"СМИРНОВУ\",\n          \"last_name_accusative_upper\": \"СМИРНОВА\",\n          \"last_name_instrumental_upper\": \"СМИРНОВЫМ\",\n          \"last_name_prepositional_upper\": \"СМИРНОВЕ\",\n          \"last_name_upper\": \"СМИРНОВ\"\n        },\n        \"positions\": {\n          \"id\": \"a083b9bb-d944-4734-874a-470d5b61e949\",\n          \"branch_id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n          \"name\": \"Инженер\",\n          \"created_at\": \"2026-02-03T21:04:19.922223+00:00\",\n          \"updated_at\": \"2026-02-03T21:43:20.914743+00:00\",\n          \"created_by\": null,\n          \"updated_by\": null,\n          \"position_subcategory_id\": \"c15159ee-981c-49a0-946a-865e76286c49\",\n          \"name_nominative\": \"Инженер\",\n          \"name_genitive\": \"Инженера\",\n          \"name_dative\": \"Инженеру\",\n          \"name_accusative\": \"Инженера\",\n          \"name_instrumental\": \"Инженером\",\n          \"name_prepositional\": \"Инженере\",\n          \"name_nominative_lower\": \"инженер\",\n          \"name_genitive_lower\": \"инженера\",\n          \"name_dative_lower\": \"инженеру\",\n          \"name_accusative_lower\": \"инженера\",\n          \"name_instrumental_lower\": \"инженером\",\n          \"name_prepositional_lower\": \"инженере\"\n        },\n         \"departments\": {\n          \"id\": \"eafec820-0fb3-43d7-b469-03126a842b4d\",\n          \"branch_id\": \"0f219505-e5d6-44d4-8c01-da68b424cf1f\",\n          \"name\": \"Отдел кадров\",\n          \"created_at\": \"2026-02-03T20:54:07.186789+00:00\",\n          \"updated_at\": \"2026-03-06T18:43:02.704325+00:00\",\n          \"created_by\": null,\n          \"updated_by\": \"ccf11e87-b770-48bd-bee5-7cc5904cff9c\",\n          \"name_nominative\": \"Отдел кадров\",\n          \"name_genitive\": \"Отдела кадров\",\n          \"name_dative\": \"Отделу кадров\",\n          \"name_accusative\": \"Отдела кадров\",\n          \"name_instrumental\": \"Отделом кадров\",\n          \"name_prepositional\": \"Отделе кадров\",\n          \"name_nominative_lower\": \"отдел кадров\",\n          \"name_genitive_lower\": \"отдела кадров\",\n          \"name_dative_lower\": \"отделу кадров\",\n          \"name_accusative_lower\": \"отдела кадров\",\n          \"name_instrumental_lower\": \"отделом кадров\",\n          \"name_prepositional_lower\": \"отделе кадров\"\n        }\n      }\n    }\n  }\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6672,
+        1776
+      ],
+      "id": "0dad3b61-63e5-4720-826d-08046ec24f58",
+      "name": "Edit Fields14"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        8480,
+        4848
+      ],
+      "id": "870d2ba5-832a-4855-9916-0155255b1710",
+      "name": "Merge13"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "payload.templateId"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        8144,
+        4832
+      ],
+      "id": "87fba86f-3d1f-4744-ba57-ff1b83431ec7",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  // Таблица фиксированная\n  const base = \"http://kong:8000/rest/v1/templates\";\n\n  const parts = [];\n\n  // -------------------------\n  // 1) Универсальные фильтры из payload\n  // -------------------------\n  const payloadRaw = j.payload ?? {};\n  const payload =\n    payloadRaw && typeof payloadRaw === \"object\" && !Array.isArray(payloadRaw)\n      ? payloadRaw\n      : {};\n\n  for (const [key, value] of Object.entries(payload)) {\n    if (!key) continue;\n    if (value === undefined || value === \"\") continue;\n\n    const k = encodeURIComponent(key);\n\n    if (value === null) {\n      parts.push(`${k}=is.null`);\n      continue;\n    }\n\n    if (Array.isArray(value)) {\n      const arr = value\n        .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n        .map((v) => encodeURIComponent(String(v).trim()));\n      if (arr.length) parts.push(`${k}=in.(${arr.join(\",\")})`);\n      continue;\n    }\n\n    const v = String(value).trim();\n    if (v !== \"\") parts.push(`${k}=eq.${encodeURIComponent(v)}`);\n  }\n\n  // -------------------------\n  // 2) templateId -> id=in.(...)\n  // -------------------------\n  if (Array.isArray(j.templateId)) {\n    const arr = j.templateId\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) {\n      parts.push(`id=in.(${arr.join(\",\")})`);\n    }\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // -------------------------\n  // 3) Заголовки\n  // -------------------------\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  if (!Authorization)\n    throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8816,
+        4848
+      ],
+      "id": "fdee843a-30c3-4065-b913-c5679d3f7e86",
+      "name": "Code in JavaScript10"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "34af7498-b893-4866-b5eb-8a77badf77bb",
+      "name": "Supabase: GET7",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9168,
+        4832
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "11af36bd-b484-4734-a1fc-5c06c42a28d1",
+              "name": "template_html",
+              "value": "={{ $json.template_html }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9376,
+        4832
+      ],
+      "id": "969dc7bc-3468-4fd2-bf22-6217e682c30d",
+      "name": "Edit Fields15"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "template_html.variableSchema",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9616,
+        4832
+      ],
+      "id": "7b11fa8f-67a7-48a3-81ca-d59101575b05",
+      "name": "Edit Fields16"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4e1dab52-b401-4eff-acc2-b7e43ac70421",
+              "name": "payload.templateId",
+              "value": "={{ $json.payload.templateId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7920,
+        4832
+      ],
+      "id": "8ac8f3a8-e1cf-4ac3-8562-5739e01fb31e",
+      "name": "templateId пункт приказа"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  return {\n    json: item.json.template_html\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9824,
+        4832
+      ],
+      "id": "7817a437-6613-4705-b5a1-f8b9cd2d3d7e",
+      "name": "Code in JavaScript42"
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "field": "person_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        8080,
+        4032
+      ],
+      "id": "c8fd5710-0871-4bb1-8161-11da3afa80b5",
+      "name": "Summarize1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        10640,
+        4848
+      ],
+      "id": "f8c39193-4860-43a5-94ff-fb178dfa2c46",
+      "name": "Merge23"
+    },
+    {
+      "parameters": {
+        "jsCode": "const clone = (obj) => JSON.parse(JSON.stringify(obj));\n\nreturn items.map(item => {\n  const count = Number(item.json.count_person_id || 0);\n  const content = clone(item.json.content);\n  const pageSettings = clone(item.json.pageSettings);\n  const default_title = item.json.default_title ?? \"\";\n\n  if (!content || !Array.isArray(content.content) || !content.content.length) {\n    return {\n      json: {\n        content,\n        pageSettings,\n        default_title\n      }\n    };\n  }\n\n  const templateParagraph = content.content.find(node => node.type === 'paragraph');\n\n  if (!templateParagraph || count < 1) {\n    return {\n      json: {\n        content,\n        pageSettings,\n        default_title\n      }\n    };\n  }\n\n  const newParagraphs = [];\n\n  for (let i = 1; i <= count; i++) {\n    const paragraphCopy = clone(templateParagraph);\n\n    const replacePaths = (node) => {\n      if (Array.isArray(node)) {\n        node.forEach(replacePaths);\n        return;\n      }\n\n      if (node && typeof node === 'object') {\n        if (\n          node.type === 'templateVariable' &&\n          node.attrs &&\n          typeof node.attrs.path === 'string'\n        ) {\n          node.attrs.path = node.attrs.path.replace(/^p\\d+/, `p${i}`);\n        }\n\n        for (const key in node) {\n          replacePaths(node[key]);\n        }\n      }\n    };\n\n    replacePaths(paragraphCopy);\n    newParagraphs.push(paragraphCopy);\n  }\n\n  content.content = newParagraphs;\n\n  return {\n    json: {\n      content,\n      pageSettings,\n      default_title\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11504,
+        4880
+      ],
+      "id": "b1080e30-5294-4034-9b5c-0535b27be1ed",
+      "name": "Code in JavaScript43"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        7232,
+        1280
+      ],
+      "id": "4ca1c18b-4c61-4f6e-95ce-a24b83e7260d",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        14576,
+        4704
+      ],
+      "id": "393ce1d3-1831-43a4-989c-9281455cb5a0",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "331eecb1-8cb3-42e7-bdc8-1f5b4a22c622",
+              "name": "visa_template_id",
+              "value": "={{ $json.visa_template_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        10528,
+        4496
+      ],
+      "id": "59395bbc-eed0-4469-ac58-60ffeb903d6a",
+      "name": "Визы"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "cda22e82-5ed8-4fe7-b62e-786f381cf0cb",
+              "name": "template_id",
+              "value": "={{ $json.template_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        10528,
+        4272
+      ],
+      "id": "64171fa0-7b7e-4d4a-8449-95942b446a17",
+      "name": "Шапка"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11008,
+        4208
+      ],
+      "id": "7ec04e4d-9192-4079-a552-25cbb239ad0a",
+      "name": "Merge36"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  const base = \"http://kong:8000/rest/v1/templates\";\n  const parts = [];\n\n  // -------------------------\n  // 1) Универсальные фильтры из payload\n  // -------------------------\n  const payloadRaw = j.payload ?? {};\n  const payload =\n    payloadRaw && typeof payloadRaw === \"object\" && !Array.isArray(payloadRaw)\n      ? payloadRaw\n      : {};\n\n  for (const [key, value] of Object.entries(payload)) {\n    if (!key) continue;\n    if (value === undefined || value === \"\") continue;\n\n    const k = encodeURIComponent(key);\n\n    if (value === null) {\n      parts.push(`${k}=is.null`);\n      continue;\n    }\n\n    if (Array.isArray(value)) {\n      const arr = value\n        .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n        .map((v) => encodeURIComponent(String(v).trim()));\n\n      if (arr.length) {\n        parts.push(`${k}=in.(${arr.join(\",\")})`);\n      }\n      continue;\n    }\n\n    const v = String(value).trim();\n    if (v !== \"\") {\n      parts.push(`${k}=eq.${encodeURIComponent(v)}`);\n    }\n  }\n\n  // -------------------------\n  // 2) template_id / templateId -> id=eq... или id=in.(...)\n  // -------------------------\n  const templateValue = j.template_id ?? j.templateId ?? null;\n\n  if (Array.isArray(templateValue)) {\n    const arr = templateValue\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) {\n      parts.push(`id=in.(${arr.join(\",\")})`);\n    }\n  } else if (templateValue !== undefined && templateValue !== null && String(templateValue).trim() !== \"\") {\n    parts.push(`id=eq.${encodeURIComponent(String(templateValue).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // -------------------------\n  // 3) Заголовки\n  // -------------------------\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) {\n    throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  }\n\n  if (!Authorization) {\n    throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n  }\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11216,
+        4208
+      ],
+      "id": "43ac5aff-fd2e-48c1-8b53-cf4cc487adf3",
+      "name": "Code in JavaScript44"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ee9044b0-6800-4b51-b669-c07f1b1437cb",
+      "name": "Supabase: GET14",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        11440,
+        4208
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8981d8a4-13e7-4825-8d27-5bfd52a7b138",
+              "name": "orderheader",
+              "value": "={{ $json.template_html }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        12368,
+        4352
+      ],
+      "id": "e0c913d9-6094-497f-8ce3-d4e26caceae5",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11008,
+        4512
+      ],
+      "id": "700fa488-d454-4e1e-b7fe-6ac0b4c3b7a1",
+      "name": "Merge37"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().map((item) => {\n  const j = item.json || {};\n\n  const base = \"http://kong:8000/rest/v1/templates\";\n  const parts = [];\n\n  // -------------------------\n  // 1) Универсальные фильтры из payload\n  // -------------------------\n  const payloadRaw = j.payload ?? {};\n  const payload =\n    payloadRaw && typeof payloadRaw === \"object\" && !Array.isArray(payloadRaw)\n      ? payloadRaw\n      : {};\n\n  for (const [key, value] of Object.entries(payload)) {\n    if (!key) continue;\n    if (value === undefined || value === \"\") continue;\n\n    const k = encodeURIComponent(key);\n\n    if (value === null) {\n      parts.push(`${k}=is.null`);\n      continue;\n    }\n\n    if (Array.isArray(value)) {\n      const arr = value\n        .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n        .map((v) => encodeURIComponent(String(v).trim()));\n\n      if (arr.length) {\n        parts.push(`${k}=in.(${arr.join(\",\")})`);\n      }\n      continue;\n    }\n\n    const v = String(value).trim();\n    if (v !== \"\") {\n      parts.push(`${k}=eq.${encodeURIComponent(v)}`);\n    }\n  }\n\n  // -------------------------\n  // 2) template_id / templateId / visa_template_id -> id=eq... или id=in.(...)\n  // -------------------------\n  const templateValue =\n    j.visa_template_id ??\n    j.template_id ??\n    j.templateId ??\n    null;\n\n  if (Array.isArray(templateValue)) {\n    const arr = templateValue\n      .filter((v) => v !== undefined && v !== null && String(v).trim() !== \"\")\n      .map((v) => encodeURIComponent(String(v).trim()));\n\n    if (arr.length) {\n      parts.push(`id=in.(${arr.join(\",\")})`);\n    }\n  } else if (\n    templateValue !== undefined &&\n    templateValue !== null &&\n    String(templateValue).trim() !== \"\"\n  ) {\n    parts.push(`id=eq.${encodeURIComponent(String(templateValue).trim())}`);\n  }\n\n  const url = parts.length ? `${base}?${parts.join(\"&\")}` : base;\n\n  // -------------------------\n  // 3) Заголовки\n  // -------------------------\n  const h = j.headers && typeof j.headers === \"object\" ? j.headers : {};\n\n  const apiKey = h.apikey ?? j.API ?? j.apikey ?? null;\n\n  const authRaw = h.Authorization ?? j.token ?? null;\n  const Authorization =\n    authRaw && /^Bearer\\s+/i.test(String(authRaw))\n      ? String(authRaw)\n      : authRaw\n        ? `Bearer ${String(authRaw)}`\n        : null;\n\n  if (!apiKey) {\n    throw new Error(\"Missing API key (json.headers.apikey or json.API)\");\n  }\n\n  if (!Authorization) {\n    throw new Error(\"Missing Authorization (json.headers.Authorization or json.token)\");\n  }\n\n  return {\n    json: {\n      ...j,\n      url,\n      headers: {\n        ...h,\n        apikey: apiKey,\n        Authorization,\n      },\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11216,
+        4512
+      ],
+      "id": "7f142cb7-dafb-420c-bb33-e8a352f05caf",
+      "name": "Code in JavaScript45"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $json.API }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.Authorization }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e0203e53-82d9-4f11-8aae-4bf1fae42e2d",
+      "name": "Supabase: GET15",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        11440,
+        4512
+      ],
+      "executeOnce": false,
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8981d8a4-13e7-4825-8d27-5bfd52a7b138",
+              "name": "visa",
+              "value": "={{ $json.template_html }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        11632,
+        4512
+      ],
+      "id": "8673bfb4-c55e-429b-916e-7433b8e60d2a",
+      "name": "Edit Fields17"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        11920,
+        4672
+      ],
+      "id": "fdf49eed-3f1a-4117-a7f5-326216d33951",
+      "name": "Merge38"
+    },
+    {
+      "parameters": {
+        "jsCode": "const clone = (obj) => JSON.parse(JSON.stringify(obj));\n\nfunction hasTemplateVariable(node) {\n  if (Array.isArray(node)) {\n    return node.some(hasTemplateVariable);\n  }\n\n  if (!node || typeof node !== \"object\") {\n    return false;\n  }\n\n  if (\n    node.type === \"templateVariable\" &&\n    node.attrs &&\n    typeof node.attrs.path === \"string\" &&\n    /^p\\d+/.test(node.attrs.path)\n  ) {\n    return true;\n  }\n\n  for (const key in node) {\n    if (hasTemplateVariable(node[key])) {\n      return true;\n    }\n  }\n\n  return false;\n}\n\nfunction replacePaths(node, index) {\n  if (Array.isArray(node)) {\n    node.forEach((item) => replacePaths(item, index));\n    return;\n  }\n\n  if (!node || typeof node !== \"object\") {\n    return;\n  }\n\n  if (\n    node.type === \"templateVariable\" &&\n    node.attrs &&\n    typeof node.attrs.path === \"string\"\n  ) {\n    node.attrs.path = node.attrs.path.replace(/^p\\d+/, `p${index}`);\n  }\n\n  for (const key in node) {\n    replacePaths(node[key], index);\n  }\n}\n\nfunction processNode(node, count) {\n  if (Array.isArray(node)) {\n    return node.map((item) => processNode(item, count));\n  }\n\n  if (!node || typeof node !== \"object\") {\n    return node;\n  }\n\n  const newNode = clone(node);\n\n  // Если это ячейка таблицы — дублируем нужные paragraph внутри нее\n  if (newNode.type === \"tableCell\" && Array.isArray(newNode.content)) {\n    const newContent = [];\n\n    for (const child of newNode.content) {\n      if (child && child.type === \"paragraph\" && hasTemplateVariable(child)) {\n        for (let i = 1; i <= count; i++) {\n          const paragraphCopy = clone(child);\n          replacePaths(paragraphCopy, i);\n          newContent.push(paragraphCopy);\n        }\n      } else {\n        newContent.push(processNode(child, count));\n      }\n    }\n\n    newNode.content = newContent;\n    return newNode;\n  }\n\n  if (Array.isArray(newNode.content)) {\n    newNode.content = newNode.content.map((child) => processNode(child, count));\n  }\n\n  return newNode;\n}\n\nreturn $input.all().map((item) => {\n  const j = item.json || {};\n  const count = Number(j.count_person_id || 0);\n\n  if (!j.visa || !j.visa.content || count < 1) {\n    return { json: j };\n  }\n\n  const visa = clone(j.visa);\n\n  // 1) Дублируем paragraph в tableCell\n  visa.content = processNode(visa.content, count);\n\n  // 2) Обновляем variableSchema: p1 -> p1, p2, p3...\n  if (Array.isArray(visa.variableSchema)) {\n    const schemaP = visa.variableSchema.filter(\n      (v) => v && typeof v.path === \"string\" && /^p\\d+/.test(v.path)\n    );\n    const schemaOther = visa.variableSchema.filter(\n      (v) => !(v && typeof v.path === \"string\" && /^p\\d+/.test(v.path))\n    );\n\n    if (schemaP.length) {\n      const baseSchema = schemaP.map((v) => {\n        const copy = clone(v);\n        copy.path = copy.path.replace(/^p\\d+/, \"p1\");\n        return copy;\n      });\n\n      const newSchema = [];\n\n      for (let i = 1; i <= count; i++) {\n        for (const row of baseSchema) {\n          const copy = clone(row);\n          copy.path = copy.path.replace(/^p1/, `p${i}`);\n          newSchema.push(copy);\n        }\n      }\n\n      visa.variableSchema = [...newSchema, ...schemaOther];\n    }\n  }\n\n  return {\n    json: {\n      ...j,\n      visa\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        12144,
+        4672
+      ],
+      "id": "fa86990d-00c9-42ee-93dd-d94d38b9a518",
+      "name": "Code in JavaScript46"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "count_person_id",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        12352,
+        4672
+      ],
+      "id": "aa11b166-c4c9-443e-9fb7-b3285adbb4b2",
+      "name": "Edit Fields18"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        13040,
+        4896
+      ],
+      "id": "19571fc7-6e0b-4cf9-91d5-8f47029ede26",
+      "name": "Merge39"
+    },
+    {
+      "parameters": {
+        "jsCode": "const clone = (obj) => JSON.parse(JSON.stringify(obj));\n\nreturn $input.all().map((item) => {\n  const j = item.json || {};\n\n  const content = clone(j.content || {});\n  const orderheaderContent = clone(j.orderheader?.content || {});\n  const pageSettings = clone(j.pageSettings || j.orderheader?.pageSettings || {});\n  const default_title = j.default_title ?? j.orderheader?.default_title ?? \"\";\n\n  if (!content || content.type !== \"doc\") {\n    throw new Error(\"Поле content не найдено или имеет неверный формат\");\n  }\n\n  const mainBlocks = Array.isArray(content.content) ? content.content : [];\n  const headerBlocks = Array.isArray(orderheaderContent.content)\n    ? orderheaderContent.content\n    : [];\n\n  if (headerBlocks.length) {\n    const firstParagraphIndex = mainBlocks.findIndex(\n      (node) => node && node.type === \"paragraph\"\n    );\n\n    if (firstParagraphIndex === -1) {\n      content.content = [...mainBlocks, ...headerBlocks];\n    } else {\n      content.content = [\n        ...mainBlocks.slice(0, firstParagraphIndex),\n        ...headerBlocks,\n        ...mainBlocks.slice(firstParagraphIndex),\n      ];\n    }\n  }\n\n  return {\n    json: {\n      content,\n      pageSettings,\n      default_title,\n    },\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13232,
+        4896
+      ],
+      "id": "a0e79a21-af6f-4d85-9d31-82c1668f65b2",
+      "name": "Code in JavaScript47"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        13552,
+        4736
+      ],
+      "id": "344c6a78-6660-497b-8df2-784d039bf4b6",
+      "name": "Merge40"
+    },
+    {
+      "parameters": {
+        "jsCode": "const clone = (obj) => JSON.parse(JSON.stringify(obj));\n\nreturn $input.all().map((item) => {\n  const j = item.json || {};\n\n  const content = clone(j.content || {});\n  const visaContent = clone(j.visa?.content || {});\n  const pageSettings = clone(j.pageSettings || j.visa?.pageSettings || {});\n  const default_title = j.default_title ?? j.visa?.default_title ?? \"\";\n\n  if (!content || content.type !== \"doc\") {\n    throw new Error(\"Поле content не найдено или имеет неверный формат\");\n  }\n\n  const mainBlocks = Array.isArray(content.content) ? content.content : [];\n  const visaBlocks = Array.isArray(visaContent.content) ? visaContent.content : [];\n\n  content.content = [...mainBlocks, ...visaBlocks];\n\n  return {\n    json: {\n      content,\n      pageSettings,\n      default_title\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        13760,
+        4736
+      ],
+      "id": "7e6cd2fe-b800-41a0-9021-98957a102c7f",
+      "name": "Code in JavaScript48"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        14080,
+        4704
+      ],
+      "id": "1fde8f37-50a8-44ce-93f8-046a16656662",
+      "name": "Merge41"
+    },
+    {
+      "parameters": {
+        "jsCode": "const clone = (obj) => JSON.parse(JSON.stringify(obj));\n\nreturn $input.all().map((item) => {\n  const j = item.json || {};\n\n  return {\n    json: {\n      content: clone(j.content || {}),\n      pageSettings: clone(j.pageSettings || {}),\n      variableSchema: clone(j.variableSchema || []),\n      variableData: clone(j.variableData || {}),\n      default_title: j.default_title ?? \"\"\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14336,
+        4704
+      ],
+      "id": "72115578-34d9-4823-8624-9d61493d66a2",
+      "name": "Code in JavaScript49"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const firstName = item.json.first_name || '';\n  const patronymic = item.json.patronymic || '';\n\n  item.json.first_name_initial = firstName ? firstName.charAt(0) + '.' : '';\n  item.json.patronymic_initial = patronymic ? patronymic.charAt(0) + '.' : '';\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9008,
+        2336
+      ],
+      "id": "acdae721-9818-470f-ad70-e664eba2ddb2",
+      "name": "Code in JavaScript50"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// ИСКЛЮЧЕНИЯ\n// ========================================\n// Сюда добавляй слова, которые нужно склонять не по общим правилам.\n// Можно писать ключи как \"Павел\", так и \"павел\" — код проверит оба варианта.\n\nconst EXCEPTIONS = {\n  first_name: {\n    'Павел': {\n      nominative: 'Павел',\n      genitive: 'Павла',\n      dative: 'Павлу',\n      accusative: 'Павла',\n      instrumental: 'Павлом',\n      prepositional: 'Павле',\n    },\n    'Лев': {\n      nominative: 'Лев',\n      genitive: 'Льва',\n      dative: 'Льву',\n      accusative: 'Льва',\n      instrumental: 'Львом',\n      prepositional: 'Льве',\n    },\n    'Пётр': {\n      nominative: 'Пётр',\n      genitive: 'Петра',\n      dative: 'Петру',\n      accusative: 'Петра',\n      instrumental: 'Петром',\n      prepositional: 'Петре',\n    },\n    'Любовь': {\n      nominative: 'Любовь',\n      genitive: 'Любови',\n      dative: 'Любови',\n      accusative: 'Любовь',\n      instrumental: 'Любовью',\n      prepositional: 'Любови',\n    },\n  },\n\n  last_name: {\n    'Толстой': {\n      nominative: 'Толстой',\n      genitive: 'Толстого',\n      dative: 'Толстому',\n      accusative: 'Толстого',\n      instrumental: 'Толстым',\n      prepositional: 'Толстом',\n    },\n    'Дюма': {\n      nominative: 'Дюма',\n      genitive: 'Дюма',\n      dative: 'Дюма',\n      accusative: 'Дюма',\n      instrumental: 'Дюма',\n      prepositional: 'Дюма',\n    },\n  },\n\n  patronymic: {\n    'Ильич': {\n      nominative: 'Ильич',\n      genitive: 'Ильича',\n      dative: 'Ильичу',\n      accusative: 'Ильича',\n      instrumental: 'Ильичом',\n      prepositional: 'Ильиче',\n    },\n  },\n};\n\n// ========================================\n// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ\n// ========================================\n\nfunction allCasesSame(word) {\n  const value = word || '';\n  return {\n    nominative: value,       // именительный\n    genitive: value,         // родительный\n    dative: value,           // дательный\n    accusative: value,       // винительный\n    instrumental: value,     // творительный\n    prepositional: value,    // предложный\n  };\n}\n\nfunction getException(type, word) {\n  if (!word) return null;\n\n  const raw = String(word).trim();\n  const lower = raw.toLowerCase();\n\n  return (\n    EXCEPTIONS[type]?.[raw] ||\n    EXCEPTIONS[type]?.[lower] ||\n    null\n  );\n}\n\nfunction needsI(stem) {\n  // После г, к, х, ж, ч, ш, щ обычно \"и\" вместо \"ы\"\n  return /[гкхжчшщ]$/iu.test(stem);\n}\n\nfunction needsEY(stem) {\n  // Для творительного падежа после шипящих и ц часто \"ей\"\n  return /[жчшщц]$/iu.test(stem);\n}\n\nfunction aEnding(word) {\n  const stem = word.slice(0, -1);\n\n  return {\n    nominative: word,\n    genitive: stem + (needsI(stem) ? 'и' : 'ы'),\n    dative: stem + 'е',\n    accusative: stem + 'у',\n    instrumental: stem + (needsEY(stem) ? 'ей' : 'ой'),\n    prepositional: stem + 'е',\n  };\n}\n\nfunction yaEnding(word) {\n  const stem = word.slice(0, -1);\n\n  // Мария -> Марии, Марии, Марию, Марией, Марии\n  if (/ия$/iu.test(word)) {\n    return {\n      nominative: word,\n      genitive: stem + 'и',\n      dative: stem + 'и',\n      accusative: stem + 'ю',\n      instrumental: stem + 'ей',\n      prepositional: stem + 'и',\n    };\n  }\n\n  return {\n    nominative: word,\n    genitive: stem + 'и',\n    dative: stem + 'е',\n    accusative: stem + 'ю',\n    instrumental: stem + 'ей',\n    prepositional: stem + 'е',\n  };\n}\n\nfunction softFemaleEnding(word) {\n  const stem = word.slice(0, -1);\n\n  return {\n    nominative: word,\n    genitive: stem + 'и',\n    dative: stem + 'и',\n    accusative: word,\n    instrumental: stem + 'ью',\n    prepositional: stem + 'и',\n  };\n}\n\nfunction maleConsonant(word) {\n  return {\n    nominative: word,\n    genitive: word + 'а',\n    dative: word + 'у',\n    accusative: word + 'а',\n    instrumental: word + 'ом',\n    prepositional: word + 'е',\n  };\n}\n\nfunction maleSoftSign(word) {\n  const stem = word.slice(0, -1);\n\n  return {\n    nominative: word,\n    genitive: stem + 'я',\n    dative: stem + 'ю',\n    accusative: stem + 'я',\n    instrumental: stem + 'ем',\n    prepositional: stem + 'е',\n  };\n}\n\nfunction maleIy(word) {\n  const stem = word.slice(0, -2);\n\n  return {\n    nominative: word,\n    genitive: stem + 'ия',\n    dative: stem + 'ию',\n    accusative: stem + 'ия',\n    instrumental: stem + 'ием',\n    prepositional: stem + 'ии',\n  };\n}\n\nfunction maleEy(word) {\n  const stem = word.slice(0, -2);\n\n  return {\n    nominative: word,\n    genitive: stem + 'ея',\n    dative: stem + 'ею',\n    accusative: stem + 'ея',\n    instrumental: stem + 'еем',\n    prepositional: stem + 'ее',\n  };\n}\n\nfunction maleAy(word) {\n  const stem = word.slice(0, -2);\n\n  return {\n    nominative: word,\n    genitive: stem + 'ая',\n    dative: stem + 'аю',\n    accusative: stem + 'ая',\n    instrumental: stem + 'аем',\n    prepositional: stem + 'ае',\n  };\n}\n\nfunction maleY(word) {\n  const stem = word.slice(0, -1);\n\n  return {\n    nominative: word,\n    genitive: stem + 'я',\n    dative: stem + 'ю',\n    accusative: stem + 'я',\n    instrumental: stem + 'ем',\n    prepositional: stem + 'е',\n  };\n}\n\nfunction detectGender(data) {\n  const gender = (data.gender || '').toString().trim().toLowerCase();\n  const patronymic = (data.patronymic || '').toString().trim().toLowerCase();\n\n  if (['male', 'm', 'man', 'м', 'муж', 'мужской'].includes(gender)) return 'male';\n  if (['female', 'f', 'woman', 'ж', 'жен', 'женский'].includes(gender)) return 'female';\n\n  if (patronymic.endsWith('ич')) return 'male';\n  if (patronymic.endsWith('на')) return 'female';\n\n  return 'unknown';\n}\n\n// ========================================\n// СКЛОНЕНИЕ ИМЕНИ\n// ========================================\n\nfunction declineFirstName(word, gender) {\n  if (!word) return allCasesSame('');\n\n  const exception = getException('first_name', word);\n  if (exception) return exception;\n\n  const w = String(word).trim();\n\n  if (/ей$/iu.test(w)) return maleEy(w);\n  if (/ай$/iu.test(w)) return maleAy(w);\n  if (/ий$/iu.test(w) && gender !== 'female') return maleIy(w);\n  if (/й$/iu.test(w) && gender !== 'female') return maleY(w);\n\n  if (/ь$/iu.test(w)) {\n    return gender === 'female' ? softFemaleEnding(w) : maleSoftSign(w);\n  }\n\n  if (/а$/iu.test(w)) return aEnding(w);\n  if (/я$/iu.test(w)) return yaEnding(w);\n\n  if (/[бвгджзклмнпрстфхцчшщ]$/iu.test(w)) {\n    return maleConsonant(w);\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ ОТЧЕСТВА\n// ========================================\n\nfunction declinePatronymic(word) {\n  if (!word) return allCasesSame('');\n\n  const exception = getException('patronymic', word);\n  if (exception) return exception;\n\n  const w = String(word).trim();\n\n  if (/ич$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w + 'а',\n      dative: w + 'у',\n      accusative: w + 'а',\n      instrumental: w + 'ем',\n      prepositional: w + 'е',\n    };\n  }\n\n  if (/на$/iu.test(w)) {\n    return aEnding(w);\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ ФАМИЛИИ\n// ========================================\n\nfunction declineLastName(word, gender) {\n  if (!word) return allCasesSame('');\n\n  const exception = getException('last_name', word);\n  if (exception) return exception;\n\n  const w = String(word).trim();\n\n  // Несклоняемые фамилии\n  if (/(ко|енко|их|ых|о|е|э|и|у|ю)$/iu.test(w)) {\n    return allCasesSame(w);\n  }\n\n  // Мужские фамилии прилагательного типа\n  if (/ский$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w.replace(/ский$/iu, 'ского'),\n      dative: w.replace(/ский$/iu, 'скому'),\n      accusative: w.replace(/ский$/iu, 'ского'),\n      instrumental: w.replace(/ский$/iu, 'ским'),\n      prepositional: w.replace(/ский$/iu, 'ском'),\n    };\n  }\n\n  if (/цкий$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w.replace(/цкий$/iu, 'цкого'),\n      dative: w.replace(/цкий$/iu, 'цкому'),\n      accusative: w.replace(/цкий$/iu, 'цкого'),\n      instrumental: w.replace(/цкий$/iu, 'цким'),\n      prepositional: w.replace(/цкий$/iu, 'цком'),\n    };\n  }\n\n  if (/ской$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w.replace(/ской$/iu, 'ского'),\n      dative: w.replace(/ской$/iu, 'скому'),\n      accusative: w.replace(/ской$/iu, 'ского'),\n      instrumental: w.replace(/ской$/iu, 'ским'),\n      prepositional: w.replace(/ской$/iu, 'ском'),\n    };\n  }\n\n  // Женские фамилии прилагательного типа\n  if (/ая$/iu.test(w) && gender === 'female') {\n    return {\n      nominative: w,\n      genitive: w.replace(/ая$/iu, 'ой'),\n      dative: w.replace(/ая$/iu, 'ой'),\n      accusative: w.replace(/ая$/iu, 'ую'),\n      instrumental: w.replace(/ая$/iu, 'ой'),\n      prepositional: w.replace(/ая$/iu, 'ой'),\n    };\n  }\n\n  // Иванова / Петрова / Синина\n  if (/(ова|ева|ина|ына)$/iu.test(w) && gender === 'female') {\n    const stem = w.slice(0, -1);\n\n    return {\n      nominative: w,\n      genitive: stem + 'ой',\n      dative: stem + 'ой',\n      accusative: stem + 'у',\n      instrumental: stem + 'ой',\n      prepositional: stem + 'ой',\n    };\n  }\n\n  // Иванов / Петров / Синицын\n  if (/(ов|ев|ин|ын)$/iu.test(w) && gender === 'male') {\n    return {\n      nominative: w,\n      genitive: w + 'а',\n      dative: w + 'у',\n      accusative: w + 'а',\n      instrumental: w + 'ым',\n      prepositional: w + 'е',\n    };\n  }\n\n  // Фамилии на -а / -я\n  if (/а$/iu.test(w)) return aEnding(w);\n  if (/я$/iu.test(w)) return yaEnding(w);\n\n  // Мужские фамилии на согласную / ь / й\n  if (gender === 'male') {\n    if (/ь$/iu.test(w)) return maleSoftSign(w);\n    if (/й$/iu.test(w)) return maleY(w);\n    if (/[бвгджзклмнпрстфхцчшщ]$/iu.test(w)) return maleConsonant(w);\n  }\n\n  // Женские фамилии на согласную обычно не склоняем\n  return allCasesSame(w);\n}\n\n// ========================================\n// ЗАПИСЬ РЕЗУЛЬТАТОВ В item.json\n// ========================================\n\nfunction assignCases(target, fieldName, cases) {\n  target[`${fieldName}_nominative`] = cases.nominative;\n  target[`${fieldName}_genitive`] = cases.genitive;\n  target[`${fieldName}_dative`] = cases.dative;\n  target[`${fieldName}_accusative`] = cases.accusative;\n  target[`${fieldName}_instrumental`] = cases.instrumental;\n  target[`${fieldName}_prepositional`] = cases.prepositional;\n}\n\n// ========================================\n// ОСНОВНАЯ ЛОГИКА\n// ========================================\n\nreturn items.map(item => {\n  const data = item.json || {};\n\n  const gender = detectGender(data);\n\n  const firstName = (data.first_name || '').toString().trim();\n  const patronymic = (data.patronymic || '').toString().trim();\n  const lastName = (data.last_name || '').toString().trim();\n\n  const first = declineFirstName(firstName, gender);\n  const patr = declinePatronymic(patronymic);\n  const last = declineLastName(lastName, gender);\n\n  data.gender_detected = gender;\n\n  assignCases(data, 'first_name', first);\n  assignCases(data, 'patronymic', patr);\n  assignCases(data, 'last_name', last);\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9216,
+        2336
+      ],
+      "id": "b6e7d1f1-5149-4152-8cd6-e21b1c167ebe",
+      "name": "Code in JavaScript51"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const fields = [\n    'last_name_nominative',\n    'last_name_genitive',\n    'last_name_dative',\n    'last_name_accusative',\n    'last_name_instrumental',\n    'last_name_prepositional',\n  ];\n\n  fields.forEach(field => {\n    item.json[`${field}_upper`] = (item.json[field] || '').toUpperCase();\n  });\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9424,
+        2336
+      ],
+      "id": "98e73d82-3f0d-4bb0-ae64-b89110e16a90",
+      "name": "Code in JavaScript52"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const lastName = item.json.last_name || '';\n  item.json.last_name_upper = lastName.toUpperCase();\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9632,
+        2336
+      ],
+      "id": "9202af12-2463-4554-86d3-59ad28ae5b0c",
+      "name": "Code in JavaScript53"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// ИСКЛЮЧЕНИЯ\n// ========================================\n// 1) phrase — исключения для всей фразы целиком\n// 2) word   — исключения для отдельных слов\n//\n// Ключи лучше писать в нижнем регистре.\n\nconst EXCEPTIONS = {\n  phrase: {\n    // пример:\n    // 'исполняющий обязанности директора': {\n    //   nominative: 'исполняющий обязанности директора',\n    //   genitive: 'исполняющего обязанности директора',\n    //   dative: 'исполняющему обязанности директора',\n    //   accusative: 'исполняющего обязанности директора',\n    //   instrumental: 'исполняющим обязанности директора',\n    //   prepositional: 'исполняющем обязанности директора',\n    // },\n  },\n\n  word: {\n    // примеры:\n    // 'судья': {\n    //   nominative: 'судья',\n    //   genitive: 'судьи',\n    //   dative: 'судье',\n    //   accusative: 'судью',\n    //   instrumental: 'судьёй',\n    //   prepositional: 'судье',\n    // },\n\n    // 'человек': {\n    //   nominative: 'человек',\n    //   genitive: 'человека',\n    //   dative: 'человеку',\n    //   accusative: 'человека',\n    //   instrumental: 'человеком',\n    //   prepositional: 'человеке',\n    // },\n  },\n};\n\n// ========================================\n// БАЗОВЫЕ ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ\n// ========================================\n\nfunction allCasesSame(value) {\n  const v = value || '';\n  return {\n    nominative: v,\n    genitive: v,\n    dative: v,\n    accusative: v,\n    instrumental: v,\n    prepositional: v,\n  };\n}\n\nfunction normalizePhrase(value) {\n  return String(value || '')\n    .trim()\n    .replace(/\\s+/g, ' ')\n    .toLowerCase();\n}\n\nfunction capitalizeFirst(value) {\n  if (!value) return value;\n  return value.charAt(0).toUpperCase() + value.slice(1);\n}\n\nfunction applyCasePattern(source, value) {\n  if (!value) return value;\n\n  if (source === source.toUpperCase()) {\n    return value.toUpperCase();\n  }\n\n  if (/^[А-ЯЁA-Z]/u.test(source)) {\n    return capitalizeFirst(value);\n  }\n\n  return value.toLowerCase();\n}\n\nfunction formatExceptionBySource(source, forms) {\n  return {\n    nominative: applyCasePattern(source, forms.nominative),\n    genitive: applyCasePattern(source, forms.genitive),\n    dative: applyCasePattern(source, forms.dative),\n    accusative: applyCasePattern(source, forms.accusative),\n    instrumental: applyCasePattern(source, forms.instrumental),\n    prepositional: applyCasePattern(source, forms.prepositional),\n  };\n}\n\nfunction getPhraseException(phrase) {\n  return EXCEPTIONS.phrase[normalizePhrase(phrase)] || null;\n}\n\nfunction getWordException(word) {\n  return EXCEPTIONS.word[String(word || '').trim().toLowerCase()] || null;\n}\n\nfunction needsI(stem) {\n  return /[гкхжчшщ]$/iu.test(stem);\n}\n\nfunction needsEY(stem) {\n  return /[жчшщц]$/iu.test(stem);\n}\n\nfunction hasCyrillic(word) {\n  return /[А-Яа-яЁё]/u.test(word);\n}\n\nfunction isServiceWord(word) {\n  return new Set([\n    'по', 'в', 'во', 'на', 'к', 'ко', 'с', 'со', 'от', 'до', 'из', 'у',\n    'для', 'без', 'об', 'обо', 'о', 'про', 'при', 'над', 'под', 'между',\n    'и', 'или'\n  ]).has(String(word || '').toLowerCase());\n}\n\nfunction isLikelyAdjective(word) {\n  return /(?:ый|ой|ий|ая|яя|ое|ее)$/iu.test(word);\n}\n\nfunction isLikelyNoun(word) {\n  if (!hasCyrillic(word)) return false;\n  if (isServiceWord(word)) return false;\n  if (isLikelyAdjective(word)) return false;\n  return true;\n}\n\n// ========================================\n// СКЛОНЕНИЕ ПРИЛАГАТЕЛЬНЫХ\n// ========================================\n\nfunction declineAdjective(word) {\n  const w = String(word).trim();\n\n  // мужской род\n  if (/ый$/iu.test(w) || /ой$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ого',\n      dative: stem + 'ому',\n      accusative: stem + 'ого',\n      instrumental: stem + 'ым',\n      prepositional: stem + 'ом',\n    };\n  }\n\n  if (/ий$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'его',\n      dative: stem + 'ему',\n      accusative: stem + 'его',\n      instrumental: stem + 'им',\n      prepositional: stem + 'ем',\n    };\n  }\n\n  // женский род\n  if (/ая$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ой',\n      dative: stem + 'ой',\n      accusative: stem + 'ую',\n      instrumental: stem + 'ой',\n      prepositional: stem + 'ой',\n    };\n  }\n\n  if (/яя$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ей',\n      dative: stem + 'ей',\n      accusative: stem + 'юю',\n      instrumental: stem + 'ей',\n      prepositional: stem + 'ей',\n    };\n  }\n\n  // средний род\n  if (/ое$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ого',\n      dative: stem + 'ому',\n      accusative: w,\n      instrumental: stem + 'ым',\n      prepositional: stem + 'ом',\n    };\n  }\n\n  if (/ее$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'его',\n      dative: stem + 'ему',\n      accusative: w,\n      instrumental: stem + 'им',\n      prepositional: stem + 'ем',\n    };\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ СУЩЕСТВИТЕЛЬНЫХ\n// ========================================\n\nfunction declineNoun(word) {\n  const w = String(word).trim();\n\n  // исключение на слово\n  const exception = getWordException(w);\n  if (exception) {\n    return formatExceptionBySource(w, exception);\n  }\n\n  // слова без кириллицы не трогаем\n  if (!hasCyrillic(w)) {\n    return allCasesSame(w);\n  }\n\n  // на -а\n  if (/а$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + (needsI(stem) ? 'и' : 'ы'),\n      dative: stem + 'е',\n      accusative: stem + 'у',\n      instrumental: stem + (needsEY(stem) ? 'ей' : 'ой'),\n      prepositional: stem + 'е',\n    };\n  }\n\n  // на -я\n  if (/я$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n\n    if (/ия$/iu.test(w)) {\n      return {\n        nominative: w,\n        genitive: stem + 'и',\n        dative: stem + 'и',\n        accusative: stem + 'ю',\n        instrumental: stem + 'ей',\n        prepositional: stem + 'и',\n      };\n    }\n\n    return {\n      nominative: w,\n      genitive: stem + 'и',\n      dative: stem + 'е',\n      accusative: stem + 'ю',\n      instrumental: stem + 'ей',\n      prepositional: stem + 'е',\n    };\n  }\n\n  // женский мягкий знак: \"должность\"\n  if (/ь$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n\n    // простая эвристика:\n    // если слово похоже на женский род — склоняем как \"должность\"\n    if (/(ость|есть|жь|шь|чь|щь)$/iu.test(w)) {\n      return {\n        nominative: w,\n        genitive: stem + 'и',\n        dative: stem + 'и',\n        accusative: w,\n        instrumental: stem + 'ью',\n        prepositional: stem + 'и',\n      };\n    }\n\n    // иначе как мужской род\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: stem + 'я',\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  // на -й\n  if (/й$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: stem + 'я',\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  // на -о\n  if (/о$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'а',\n      dative: stem + 'у',\n      accusative: w,\n      instrumental: stem + 'ом',\n      prepositional: stem + 'е',\n    };\n  }\n\n  // на -е\n  if (/е$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: w,\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  // на согласную\n  if (/[бвгджзклмнпрстфхцчшщ]$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w + 'а',\n      dative: w + 'у',\n      accusative: w + 'а',\n      instrumental: w + 'ом',\n      prepositional: w + 'е',\n    };\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ ОТДЕЛЬНОГО СЛОВА\n// ========================================\n\nfunction declineSimpleWord(word) {\n  const w = String(word).trim();\n\n  const exception = getWordException(w);\n  if (exception) {\n    return formatExceptionBySource(w, exception);\n  }\n\n  if (!w || isServiceWord(w) || !hasCyrillic(w)) {\n    return allCasesSame(w);\n  }\n\n  if (isLikelyAdjective(w)) {\n    return declineAdjective(w);\n  }\n\n  return declineNoun(w);\n}\n\nfunction declineHyphenatedWord(word) {\n  const parts = String(word).split('-');\n\n  if (parts.length === 1) {\n    return declineSimpleWord(word);\n  }\n\n  const declinedParts = parts.map(part => declineSimpleWord(part));\n\n  return {\n    nominative: declinedParts.map(x => x.nominative).join('-'),\n    genitive: declinedParts.map(x => x.genitive).join('-'),\n    dative: declinedParts.map(x => x.dative).join('-'),\n    accusative: declinedParts.map(x => x.accusative).join('-'),\n    instrumental: declinedParts.map(x => x.instrumental).join('-'),\n    prepositional: declinedParts.map(x => x.prepositional).join('-'),\n  };\n}\n\n// ========================================\n// СКЛОНЕНИЕ ВСЕЙ ДОЛЖНОСТИ\n// ========================================\n\nfunction declinePositionName(title) {\n  const original = String(title || '').trim();\n  if (!original) return allCasesSame('');\n\n  // исключение на всю фразу\n  const phraseException = getPhraseException(original);\n  if (phraseException) {\n    return phraseException;\n  }\n\n  const words = original.split(/\\s+/).filter(Boolean);\n  if (!words.length) return allCasesSame(original);\n\n  // если есть предлог, всё что после него обычно оставляем как есть:\n  // \"Инженер по охране труда\" -> склоняем \"Инженер\", хвост не трогаем\n  const prepositionIndex = words.findIndex(word => isServiceWord(word));\n\n  const head = prepositionIndex === -1 ? words : words.slice(0, prepositionIndex);\n  const tail = prepositionIndex === -1 ? [] : words.slice(prepositionIndex);\n\n  // логика для head:\n  // - если сначала идут прилагательные, а потом существительное:\n  //   склоняем прилагательные + первое существительное\n  // - если первое слово существительное:\n  //   склоняем только первое существительное\n  // - остальные слова head оставляем как есть\n  const transformed = head.map(word => allCasesSame(word));\n\n  let firstNounIndex = -1;\n  for (let i = 0; i < head.length; i++) {\n    const word = head[i];\n\n    if (isLikelyAdjective(word)) {\n      transformed[i] = declineHyphenatedWord(word);\n      continue;\n    }\n\n    if (isLikelyNoun(word)) {\n      transformed[i] = declineHyphenatedWord(word);\n      firstNounIndex = i;\n      break;\n    }\n\n    transformed[i] = allCasesSame(word);\n  }\n\n  // всё после первого существительного в head оставляем без изменений\n  for (let i = firstNounIndex + 1; i < head.length; i++) {\n    transformed[i] = allCasesSame(head[i]);\n  }\n\n  // если существительное вообще не нашли, пробуем склонить только прилагательные\n  if (firstNounIndex === -1) {\n    for (let i = 0; i < head.length; i++) {\n      if (isLikelyAdjective(head[i])) {\n        transformed[i] = declineHyphenatedWord(head[i]);\n      } else {\n        transformed[i] = allCasesSame(head[i]);\n      }\n    }\n  }\n\n  function build(caseName) {\n    const headPart = transformed.map(item => item[caseName]);\n    return headPart.concat(tail).join(' ');\n  }\n\n  return {\n    nominative: build('nominative'),\n    genitive: build('genitive'),\n    dative: build('dative'),\n    accusative: build('accusative'),\n    instrumental: build('instrumental'),\n    prepositional: build('prepositional'),\n  };\n}\n\n// ========================================\n// ЗАПИСЬ ПОЛЕЙ\n// ========================================\n\nreturn items.map(item => {\n  const name = item.json.name || '';\n  const cases = declinePositionName(name);\n\n  item.json.name_nominative = cases.nominative;\n  item.json.name_genitive = cases.genitive;\n  item.json.name_dative = cases.dative;\n  item.json.name_accusative = cases.accusative;\n  item.json.name_instrumental = cases.instrumental;\n  item.json.name_prepositional = cases.prepositional;\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8944,
+        2928
+      ],
+      "id": "ee1ed394-33be-414f-b010-40c74c1d4a88",
+      "name": "Code in JavaScript54"
+    },
+    {
+      "parameters": {
+        "jsCode": "function lowercaseFirst(value) {\n  const str = (value || '').toString().trim();\n  return str ? str.charAt(0).toLowerCase() + str.slice(1) : '';\n}\n\nreturn items.map(item => {\n  const fields = [\n    'name_nominative',\n    'name_genitive',\n    'name_dative',\n    'name_accusative',\n    'name_instrumental',\n    'name_prepositional',\n  ];\n\n  fields.forEach(field => {\n    item.json[`${field}_lower`] = lowercaseFirst(item.json[field]);\n  });\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9152,
+        2928
+      ],
+      "id": "61f13832-76c5-4d87-b458-d9f4e7558be5",
+      "name": "Code in JavaScript55"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ========================================\n// ИСКЛЮЧЕНИЯ\n// ========================================\n// phrase — исключения для всей фразы целиком\n// word   — исключения для отдельных слов\n//\n// Ключи лучше писать в нижнем регистре.\n\nconst EXCEPTIONS = {\n  phrase: {\n    // пример:\n    // 'отдел кадров': {\n    //   nominative: 'Отдел кадров',\n    //   genitive: 'Отдела кадров',\n    //   dative: 'Отделу кадров',\n    //   accusative: 'Отдел кадров',\n    //   instrumental: 'Отделом кадров',\n    //   prepositional: 'Отделе кадров',\n    // },\n  },\n\n  word: {\n    // пример:\n    // 'управление': {\n    //   nominative: 'Управление',\n    //   genitive: 'Управления',\n    //   dative: 'Управлению',\n    //   accusative: 'Управление',\n    //   instrumental: 'Управлением',\n    //   prepositional: 'Управлении',\n    // },\n  },\n};\n\n// ========================================\n// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ\n// ========================================\n\nfunction allCasesSame(value) {\n  const v = value || '';\n  return {\n    nominative: v,\n    genitive: v,\n    dative: v,\n    accusative: v,\n    instrumental: v,\n    prepositional: v,\n  };\n}\n\nfunction normalizePhrase(value) {\n  return String(value || '')\n    .trim()\n    .replace(/\\s+/g, ' ')\n    .toLowerCase();\n}\n\nfunction capitalizeFirst(value) {\n  if (!value) return value;\n  return value.charAt(0).toUpperCase() + value.slice(1);\n}\n\nfunction applyCasePattern(source, value) {\n  if (!value) return value;\n\n  if (source === source.toUpperCase()) {\n    return value.toUpperCase();\n  }\n\n  if (/^[А-ЯЁA-Z]/u.test(source)) {\n    return capitalizeFirst(value);\n  }\n\n  return value.toLowerCase();\n}\n\nfunction formatExceptionBySource(source, forms) {\n  return {\n    nominative: applyCasePattern(source, forms.nominative),\n    genitive: applyCasePattern(source, forms.genitive),\n    dative: applyCasePattern(source, forms.dative),\n    accusative: applyCasePattern(source, forms.accusative),\n    instrumental: applyCasePattern(source, forms.instrumental),\n    prepositional: applyCasePattern(source, forms.prepositional),\n  };\n}\n\nfunction getPhraseException(phrase) {\n  return EXCEPTIONS.phrase[normalizePhrase(phrase)] || null;\n}\n\nfunction getWordException(word) {\n  return EXCEPTIONS.word[String(word || '').trim().toLowerCase()] || null;\n}\n\nfunction needsI(stem) {\n  return /[гкхжчшщ]$/iu.test(stem);\n}\n\nfunction needsEY(stem) {\n  return /[жчшщц]$/iu.test(stem);\n}\n\nfunction hasCyrillic(word) {\n  return /[А-Яа-яЁё]/u.test(word);\n}\n\nfunction isServiceWord(word) {\n  return new Set([\n    'по', 'в', 'во', 'на', 'к', 'ко', 'с', 'со', 'от', 'до', 'из', 'у',\n    'для', 'без', 'об', 'обо', 'о', 'про', 'при', 'над', 'под', 'между',\n    'и', 'или'\n  ]).has(String(word || '').toLowerCase());\n}\n\nfunction isLikelyAdjective(word) {\n  return /(?:ый|ой|ий|ая|яя|ое|ее)$/iu.test(word);\n}\n\nfunction isLikelyNoun(word) {\n  if (!hasCyrillic(word)) return false;\n  if (isServiceWord(word)) return false;\n  if (isLikelyAdjective(word)) return false;\n  return true;\n}\n\n// ========================================\n// СКЛОНЕНИЕ ПРИЛАГАТЕЛЬНЫХ\n// ========================================\n\nfunction declineAdjective(word) {\n  const w = String(word).trim();\n\n  if (/ый$/iu.test(w) || /ой$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ого',\n      dative: stem + 'ому',\n      accusative: stem + 'ого',\n      instrumental: stem + 'ым',\n      prepositional: stem + 'ом',\n    };\n  }\n\n  if (/ий$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'его',\n      dative: stem + 'ему',\n      accusative: stem + 'его',\n      instrumental: stem + 'им',\n      prepositional: stem + 'ем',\n    };\n  }\n\n  if (/ая$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ой',\n      dative: stem + 'ой',\n      accusative: stem + 'ую',\n      instrumental: stem + 'ой',\n      prepositional: stem + 'ой',\n    };\n  }\n\n  if (/яя$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ей',\n      dative: stem + 'ей',\n      accusative: stem + 'юю',\n      instrumental: stem + 'ей',\n      prepositional: stem + 'ей',\n    };\n  }\n\n  if (/ое$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'ого',\n      dative: stem + 'ому',\n      accusative: w,\n      instrumental: stem + 'ым',\n      prepositional: stem + 'ом',\n    };\n  }\n\n  if (/ее$/iu.test(w)) {\n    const stem = w.slice(0, -2);\n    return {\n      nominative: w,\n      genitive: stem + 'его',\n      dative: stem + 'ему',\n      accusative: w,\n      instrumental: stem + 'им',\n      prepositional: stem + 'ем',\n    };\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ СУЩЕСТВИТЕЛЬНЫХ\n// ========================================\n\nfunction declineNoun(word) {\n  const w = String(word).trim();\n\n  const exception = getWordException(w);\n  if (exception) {\n    return formatExceptionBySource(w, exception);\n  }\n\n  if (!hasCyrillic(w)) {\n    return allCasesSame(w);\n  }\n\n  if (/а$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + (needsI(stem) ? 'и' : 'ы'),\n      dative: stem + 'е',\n      accusative: stem + 'у',\n      instrumental: stem + (needsEY(stem) ? 'ей' : 'ой'),\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/я$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n\n    if (/ия$/iu.test(w)) {\n      return {\n        nominative: w,\n        genitive: stem + 'и',\n        dative: stem + 'и',\n        accusative: stem + 'ю',\n        instrumental: stem + 'ей',\n        prepositional: stem + 'и',\n      };\n    }\n\n    return {\n      nominative: w,\n      genitive: stem + 'и',\n      dative: stem + 'е',\n      accusative: stem + 'ю',\n      instrumental: stem + 'ей',\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/ь$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n\n    if (/(ость|есть|жь|шь|чь|щь)$/iu.test(w)) {\n      return {\n        nominative: w,\n        genitive: stem + 'и',\n        dative: stem + 'и',\n        accusative: w,\n        instrumental: stem + 'ью',\n        prepositional: stem + 'и',\n      };\n    }\n\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: stem + 'я',\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/й$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: stem + 'я',\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/о$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'а',\n      dative: stem + 'у',\n      accusative: w,\n      instrumental: stem + 'ом',\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/е$/iu.test(w)) {\n    const stem = w.slice(0, -1);\n    return {\n      nominative: w,\n      genitive: stem + 'я',\n      dative: stem + 'ю',\n      accusative: w,\n      instrumental: stem + 'ем',\n      prepositional: stem + 'е',\n    };\n  }\n\n  if (/[бвгджзклмнпрстфхцчшщ]$/iu.test(w)) {\n    return {\n      nominative: w,\n      genitive: w + 'а',\n      dative: w + 'у',\n      accusative: w + 'а',\n      instrumental: w + 'ом',\n      prepositional: w + 'е',\n    };\n  }\n\n  return allCasesSame(w);\n}\n\n// ========================================\n// СКЛОНЕНИЕ ОТДЕЛЬНОГО СЛОВА\n// ========================================\n\nfunction declineSimpleWord(word) {\n  const w = String(word).trim();\n\n  const exception = getWordException(w);\n  if (exception) {\n    return formatExceptionBySource(w, exception);\n  }\n\n  if (!w || isServiceWord(w) || !hasCyrillic(w)) {\n    return allCasesSame(w);\n  }\n\n  if (isLikelyAdjective(w)) {\n    return declineAdjective(w);\n  }\n\n  return declineNoun(w);\n}\n\nfunction declineHyphenatedWord(word) {\n  const parts = String(word).split('-');\n\n  if (parts.length === 1) {\n    return declineSimpleWord(word);\n  }\n\n  const declinedParts = parts.map(part => declineSimpleWord(part));\n\n  return {\n    nominative: declinedParts.map(x => x.nominative).join('-'),\n    genitive: declinedParts.map(x => x.genitive).join('-'),\n    dative: declinedParts.map(x => x.dative).join('-'),\n    accusative: declinedParts.map(x => x.accusative).join('-'),\n    instrumental: declinedParts.map(x => x.instrumental).join('-'),\n    prepositional: declinedParts.map(x => x.prepositional).join('-'),\n  };\n}\n\n// ========================================\n// СКЛОНЕНИЕ НАЗВАНИЯ ПОДРАЗДЕЛЕНИЯ\n// ========================================\n\nfunction declineDepartmentName(title) {\n  const original = String(title || '').trim();\n  if (!original) return allCasesSame('');\n\n  const phraseException = getPhraseException(original);\n  if (phraseException) {\n    return phraseException;\n  }\n\n  const words = original.split(/\\s+/).filter(Boolean);\n  if (!words.length) return allCasesSame(original);\n\n  const prepositionIndex = words.findIndex(word => isServiceWord(word));\n\n  const head = prepositionIndex === -1 ? words : words.slice(0, prepositionIndex);\n  const tail = prepositionIndex === -1 ? [] : words.slice(prepositionIndex);\n\n  const transformed = head.map(word => allCasesSame(word));\n\n  let firstNounIndex = -1;\n\n  for (let i = 0; i < head.length; i++) {\n    const word = head[i];\n\n    if (isLikelyAdjective(word)) {\n      transformed[i] = declineHyphenatedWord(word);\n      continue;\n    }\n\n    if (isLikelyNoun(word)) {\n      transformed[i] = declineHyphenatedWord(word);\n      firstNounIndex = i;\n      break;\n    }\n\n    transformed[i] = allCasesSame(word);\n  }\n\n  for (let i = firstNounIndex + 1; i < head.length; i++) {\n    transformed[i] = allCasesSame(head[i]);\n  }\n\n  if (firstNounIndex === -1) {\n    for (let i = 0; i < head.length; i++) {\n      if (isLikelyAdjective(head[i])) {\n        transformed[i] = declineHyphenatedWord(head[i]);\n      } else {\n        transformed[i] = allCasesSame(head[i]);\n      }\n    }\n  }\n\n  function build(caseName) {\n    const headPart = transformed.map(item => item[caseName]);\n    return headPart.concat(tail).join(' ');\n  }\n\n  return {\n    nominative: build('nominative'),\n    genitive: build('genitive'),\n    dative: build('dative'),\n    accusative: build('accusative'),\n    instrumental: build('instrumental'),\n    prepositional: build('prepositional'),\n  };\n}\n\n// ========================================\n// ЗАПИСЬ В item.json\n// ========================================\n\nreturn items.map(item => {\n  const name = item.json.name || '';\n  const cases = declineDepartmentName(name);\n\n  item.json.name_nominative = cases.nominative;\n  item.json.name_genitive = cases.genitive;\n  item.json.name_dative = cases.dative;\n  item.json.name_accusative = cases.accusative;\n  item.json.name_instrumental = cases.instrumental;\n  item.json.name_prepositional = cases.prepositional;\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9008,
+        3184
+      ],
+      "id": "60b74146-12fc-4848-a4d0-af114fa4ed6c",
+      "name": "Code in JavaScript56"
+    },
+    {
+      "parameters": {
+        "jsCode": "function lowercaseFirst(value) {\n  const str = (value || '').toString().trim();\n  return str ? str.charAt(0).toLowerCase() + str.slice(1) : '';\n}\n\nreturn items.map(item => {\n  const fields = [\n    'name_nominative',\n    'name_genitive',\n    'name_dative',\n    'name_accusative',\n    'name_instrumental',\n    'name_prepositional',\n  ];\n\n  fields.forEach(field => {\n    item.json[`${field}_lower`] = lowercaseFirst(item.json[field]);\n  });\n\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9216,
+        3184
+      ],
+      "id": "73654e45-e152-4f62-9d23-e84f40464815",
+      "name": "Code in JavaScript57"
+    },
+    {
+      "parameters": {
+        "content": "## Фомирование сводного приказа\n",
+        "height": 3248,
+        "width": 9600,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        5424,
+        2000
+      ],
+      "typeVersion": 1,
+      "id": "914221ee-3309-42b7-afd9-467143dc279a",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Собираем и формируем переменные с данными\n",
+        "height": 432,
+        "width": 3168,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        10048,
+        3760
+      ],
+      "typeVersion": 1,
+      "id": "f1457433-ae2e-4cbe-a303-eeae97d85563",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Собираем приказ и отправляем в редактор\n",
+        "height": 896,
+        "width": 4512,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        10400,
+        4192
+      ],
+      "typeVersion": 1,
+      "id": "d1ac6129-edf8-43a7-bc09-325019f6070d",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        6240,
+        2032
+      ],
+      "id": "188d76ac-d42e-4f41-8695-0332723b5481",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        12432,
+        2560
+      ],
+      "id": "7647e81a-9ee3-4dfa-8434-6671c85198a3",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        10592,
+        2928
+      ],
+      "id": "02008c5c-96d3-4e69-9229-8a2443a96773",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        11936,
+        3408
+      ],
+      "id": "62b9e87a-7f8b-4e00-88d3-57c5e98ed275",
+      "name": "No Operation, do nothing3"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        11504,
+        3200
+      ],
+      "id": "9dd47277-93ac-4ce0-a224-4624c0f193e7",
+      "name": "No Operation, do nothing4"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        10576,
+        3264
+      ],
+      "id": "837c3b8f-dfdd-4b21-bb83-8a9c2e869a1f",
+      "name": "No Operation, do nothing5"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        10576,
+        3472
+      ],
+      "id": "450cab5e-268c-4062-ad8e-7a62c1a1f385",
+      "name": "No Operation, do nothing6"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        10656,
+        4688
+      ],
+      "id": "9377a90d-a7b4-4ec1-b026-c42e20780caf",
+      "name": "No Operation, do nothing7"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        13040,
+        4352
+      ],
+      "id": "1ffcc649-9f6c-4280-af12-1ffaa19651e9",
+      "name": "No Operation, do nothing8"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        14096,
+        3792
+      ],
+      "id": "01a0878e-9cb9-40ea-a861-1ab7fe045890",
+      "name": "No Operation, do nothing9"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        6496,
+        4800
+      ],
+      "id": "9d7c62b9-5fec-4704-8bbe-ef0adc768fd7",
+      "name": "No Operation, do nothing10"
+    }
+  ],
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: ADD": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: DELETE": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Supabase: ADD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Supabase: DELETE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Supabase: EDIT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: EDIT": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Merge5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET4": {
+      "main": [
+        [
+          {
+            "node": "Person",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Replace Me3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "branch",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "positionId",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "departmentId",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "order",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        [
+          {
+            "node": "Merge6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge6": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Person": {
+      "main": [
+        [
+          {
+            "node": "Aggregate3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate3": {
+      "main": [
+        [
+          {
+            "node": "Merge21",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates1": {
+      "main": [
+        [
+          {
+            "node": "Merge21",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Replace Me1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Replace Me2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API": {
+      "main": [
+        [
+          {
+            "node": "Merge22",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge30",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge13",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge36",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge37",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge25",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge27",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge29",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript19": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge21": {
+      "main": [
+        [
+          {
+            "node": "Merge22",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge22": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET9": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript50",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "branch": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "positionId": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate4": {
+      "main": [
+        [
+          {
+            "node": "Merge24",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript20": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge24": {
+      "main": [
+        [
+          {
+            "node": "Merge25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge25": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET10": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript54",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript24": {
+      "main": [
+        [
+          {
+            "node": "Merge31",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Replace Me1": {
+      "main": [
+        [
+          {
+            "node": "Merge24",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate5": {
+      "main": [
+        [
+          {
+            "node": "Merge26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge26": {
+      "main": [
+        [
+          {
+            "node": "Merge27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me2": {
+      "main": [
+        [
+          {
+            "node": "Merge26",
+            "type": "main",
+            "index": 1
+          },
+          {
+            "node": "Merge28",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge27": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript25",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript25": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET11": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript56",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates4": {
+      "main": [
+        [
+          {
+            "node": "Aggregate6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate6": {
+      "main": [
+        [
+          {
+            "node": "Merge28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge28": {
+      "main": [
+        [
+          {
+            "node": "Merge29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge29": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript26",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript26": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET12": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript32",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate8": {
+      "main": [
+        [
+          {
+            "node": "Merge30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge30": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript27",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript27": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET13": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript29",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "order": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript28": {
+      "main": [
+        [
+          {
+            "node": "Merge31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript29": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript30": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript31": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript32": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript24",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Summarize1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge31": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript33",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript33": {
+      "main": [
+        [
+          {
+            "node": "Merge32",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge32": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript34",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript34": {
+      "main": [
+        [
+          {
+            "node": "Merge33",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge33": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript35",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "departmentId": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript35": {
+      "main": [
+        [
+          {
+            "node": "Merge34",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge34": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript36",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript36": {
+      "main": [
+        [
+          {
+            "node": "Merge35",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge35": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript37",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript37": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript38",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript38": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript39",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript39": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields14": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge13": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Merge13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript10": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields15": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields16": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript42",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "templateId пункт приказа": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript42": {
+      "main": [
+        [
+          {
+            "node": "Merge23",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Summarize1": {
+      "main": [
+        [
+          {
+            "node": "Merge23",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "No Operation, do nothing7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge23": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript43",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript43": {
+      "main": [
+        [
+          {
+            "node": "Merge39",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Визы": {
+      "main": [
+        [
+          {
+            "node": "Merge37",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Шапка": {
+      "main": [
+        [
+          {
+            "node": "Merge36",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge36": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript44",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript44": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET14": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge37": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript45",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript45": {
+      "main": [
+        [
+          {
+            "node": "Supabase: GET15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: GET15": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields17": {
+      "main": [
+        [
+          {
+            "node": "Merge38",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge38": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript46",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript46": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields18": {
+      "main": [
+        [
+          {
+            "node": "Merge40",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge39": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript47",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript47": {
+      "main": [
+        [
+          {
+            "node": "Merge40",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge40": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript48",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript48": {
+      "main": [
+        [
+          {
+            "node": "Merge41",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge41": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript49",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript49": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript50": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript51",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript51": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript52",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript52": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript53",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript53": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript28",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript54": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript55",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript55": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript56": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript57",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript57": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript31",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        [
+          {
+            "node": "Merge35",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing2": {
+      "main": [
+        [
+          {
+            "node": "Merge32",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing3": {
+      "main": [
+        [
+          {
+            "node": "Merge34",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing4": {
+      "main": [
+        [
+          {
+            "node": "Merge33",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing5": {
+      "main": [
+        [
+          {
+            "node": "Шапка",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing6": {
+      "main": [
+        [
+          {
+            "node": "Визы",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing7": {
+      "main": [
+        [
+          {
+            "node": "Merge38",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing8": {
+      "main": [
+        [
+          {
+            "node": "Merge39",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing9": {
+      "main": [
+        [
+          {
+            "node": "Merge41",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing10": {
+      "main": [
+        [
+          {
+            "node": "templateId пункт приказа",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "7d19d2932b837a940bc5bfc0a08b0ae1d423d25749759991f5c553c9a68e4549"
+  }
+}
