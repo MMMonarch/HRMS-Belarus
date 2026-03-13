@@ -1,4 +1,4 @@
-# Клонирование Supabase Docker и создание .env.
+# Клонирование Supabase Docker и создание .env
 # Запуск из корня проекта: .\setup\02-setup-supabase.ps1
 
 $ErrorActionPreference = "Stop"
@@ -13,42 +13,47 @@ $dockerDir   = Join-Path $supabaseDir "docker"
 $envExample  = Join-Path $dockerDir ".env.example"
 $envFile     = Join-Path $dockerDir ".env"
 
-Write-Host "`n=== HRMS Belarus: setup Supabase ===`n" -ForegroundColor Cyan
+Write-Host "`n=== HRMS Belarus: настройка Supabase ===`n" -ForegroundColor Cyan
 
-# --- Clone ---
+# --- Клонирование репозитория ---
 if (Test-Path $supabaseDir) {
-    Write-Host "[OK] docker/supabase-repo already exists, skipping clone." -ForegroundColor Green
+    Write-Host "[OK] Папка docker/supabase-repo уже существует, клонирование пропущено." -ForegroundColor Green
 } else {
-    Write-Host "Cloning supabase/supabase into docker/supabase-repo ..." -ForegroundColor Yellow
+    Write-Host "Клонирование репозитория supabase/supabase в docker/supabase-repo ..." -ForegroundColor Yellow
     git clone --depth 1 https://github.com/supabase/supabase.git $supabaseDir
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "git clone failed." -ForegroundColor Red
+        Write-Host "[!!] Не удалось выполнить git clone." -ForegroundColor Red
+        Read-Host "Нажмите Enter, чтобы закрыть окно"
         exit 1
     }
-    Write-Host "[OK] Cloned." -ForegroundColor Green
+    Write-Host "[OK] Репозиторий успешно клонирован." -ForegroundColor Green
 }
 
-# --- .env ---
+# --- Создание .env для Supabase ---
 if (Test-Path $envFile) {
-    Write-Host "[OK] docker/supabase-repo/docker/.env already exists." -ForegroundColor Green
+    Write-Host "[OK] Файл docker/supabase-repo/docker/.env уже существует." -ForegroundColor Green
 } elseif (Test-Path $envExample) {
     Copy-Item $envExample $envFile
-    Write-Host "[OK] Created .env from .env.example." -ForegroundColor Green
-    Write-Host "     Review and edit passwords/keys in:" -ForegroundColor Yellow
+    Write-Host "[OK] Файл .env создан из .env.example." -ForegroundColor Green
+    Write-Host "     Проверьте и при необходимости измените пароли и ключи в файле:" -ForegroundColor Yellow
     Write-Host "     $envFile"
 } else {
-    Write-Host "[!!] .env.example not found. Create .env manually in:" -ForegroundColor Red
+    Write-Host "[!!] Файл .env.example не найден. Создайте .env вручную в папке:" -ForegroundColor Red
     Write-Host "     $dockerDir"
+    Read-Host "Нажмите Enter, чтобы закрыть окно"
     exit 1
 }
 
-# --- .env for root docker-compose (optional) ---
+# --- Создание корневого .env для docker-compose (необязательно) ---
 $rootEnv = Join-Path $root ".env"
 $rootEnvExample = Join-Path $root "docker\.env.example"
+
 if (-not (Test-Path $rootEnv) -and (Test-Path $rootEnvExample)) {
     Copy-Item $rootEnvExample $rootEnv
-    Write-Host "[OK] Created root .env from docker/.env.example" -ForegroundColor Green
+    Write-Host "[OK] Корневой файл .env создан из docker/.env.example." -ForegroundColor Green
 }
 
-Write-Host "`nDone. Next:" -ForegroundColor Green
+Write-Host "`nГотово. Следующий шаг:" -ForegroundColor Green
 Write-Host "  .\setup\03-start-stack.ps1"
+
+Read-Host "Нажмите Enter, чтобы закрыть окно"
