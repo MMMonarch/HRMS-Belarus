@@ -134,6 +134,7 @@ copy hrms-web\.env.example hrms-web\.env.local   # Настройка перем
 # HRMS Belarus (English)
 
 **HR Management System for Belarus** — personnel records, orders, employees, leave management, employment contracts.
+Telegram: https://t.me/hrmsbelarus Telegram chat https://t.me/+HcSxdLmm-RFlYzdi
 
 ## Overview
 
