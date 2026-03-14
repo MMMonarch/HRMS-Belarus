@@ -12,34 +12,58 @@
 
 ## Создание бэкапа
 
-Из **корня проекта** (Windows PowerShell):
+### Вариант 1: дамп для восстановления через 04-restore-db.ps1 (рекомендуется)
+
+Формат **.dump** (custom format): подходит для `pg_restore` и скрипта восстановления.
+
+Из **корня проекта** (PowerShell):
+
+```powershell
+.\scripts\dump-db.ps1
+```
+
+Файл: `backups/hrms-supabase-YYYYMMDD-HHmmss.dump`.  
+Восстановление: `.\setup\04-restore-db.ps1` (подхватит последний .dump) или `.\setup\04-restore-db.ps1 -BackupFile "backups\имя.dump"`.
+
+### Вариант 2: дамп в виде SQL (.sql)
+
+Из **корня проекта**:
 
 ```powershell
 .\scripts\backup-db.ps1
 ```
 
-Пароль Postgres берётся из `docker/supabase-repo/docker/.env` (переменная `POSTGRES_PASSWORD`) или из переменной окружения `$env:POSTGRES_PASSWORD`.
-
-Файл сохраняется в `backups/hrms-supabase-YYYYMMDD-HHmmss.sql`.
+Файл: `backups/hrms-supabase-YYYYMMDD-HHmmss.sql`. Восстанавливается вручную через `psql -f` (см. раздел ниже).
 
 ---
 
 ## Восстановление из дампа
 
-1. Убедитесь, что контейнер Supabase БД запущен:
-   ```powershell
-   docker ps
-   ```
-   Должен быть контейнер `supabase-db`.
+### Из файла .dump (скрипт 04-restore-db.ps1)
 
-2. Восстановить в **существующую** БД (перезаписывает данные):
+Убедитесь, что контейнер `supabase-db` запущен. Из корня проекта:
+
+```powershell
+.\setup\04-restore-db.ps1
+```
+
+Будет использован последний файл `backups/*.dump`. Либо укажите файл явно:
+
+```powershell
+.\setup\04-restore-db.ps1 -BackupFile "backups\hrms-supabase-20250101-120000.dump"
+```
+
+Скрипт копирует .dump в контейнер и выполняет `pg_restore --clean --if-exists`.
+
+### Из файла .sql (ручное восстановление)
+
+1. Контейнер `supabase-db` должен быть запущен.
+2. Восстановление:
    ```powershell
-   # Задайте пароль и путь к файлу
    $env:PGPASSWORD = "ваш_пароль"
    Get-Content backups\hrms-supabase-YYYYMMDD-HHmmss.sql | docker exec -i supabase-db psql -U postgres -d postgres
    ```
-
-3. Либо скопировать файл в контейнер и выполнить там:
+   Либо скопировать в контейнер и выполнить:
    ```powershell
    docker cp backups\hrms-supabase-YYYYMMDD-HHmmss.sql supabase-db:/tmp/restore.sql
    docker exec -e PGPASSWORD=ваш_пароль supabase-db psql -U postgres -d postgres -f /tmp/restore.sql

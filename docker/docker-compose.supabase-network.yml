@@ -1,12 +1,12 @@
-# Override: подключает контейнеры Supabase к сети hrms-belarus.
-# Использование: сначала «docker compose up -d» (создаёт сеть), затем:
+# Override: подключает контейнеры Supabase к общей сети hrms-belarus-network.
+# Порядок: сначала «docker compose up -d» (создаёт сеть и hrms-web, n8n), затем:
 #   docker compose -f docker/supabase-repo/docker/docker-compose.yml -f docker/docker-compose.supabase-network.yml --env-file docker/supabase-repo/docker/.env up -d
-# Из корня проекта. Папку docker/supabase-repo создаёт скрипт или клонирование (см. docker/README.md).
+# Тогда kong, db, auth и др. будут в одной сети с hrms-web и n8n (по именам: kong, db, n8n-db, hrms-web).
 
 networks:
   default:
     external: true
-    name: hrms-belarus_hrms-network
+    name: hrms-belarus-network
 
 services:
   studio:
