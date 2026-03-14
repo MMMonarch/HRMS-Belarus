@@ -4,6 +4,9 @@
 
 > **[English version below](#english)**
 
+Telegram: https://t.me/hrmsbelarus
+Telegram chat https://t.me/+HcSxdLmm-RFlYzdi
+
 ---
 
 ## Описание
