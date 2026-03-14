@@ -9,7 +9,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$root = Split-Path $PSScriptRoot -Parent
+if ($PSScriptRoot) {
+    $root = Split-Path $PSScriptRoot -Parent
+} else {
+    $root = Split-Path (Get-Location).Path -Parent
+}
 if (-not (Test-Path (Join-Path $root "docker-compose.yml"))) {
     $root = (Get-Location).Path
 }

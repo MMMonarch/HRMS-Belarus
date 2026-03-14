@@ -6,11 +6,11 @@ try {
     Write-Host "=== HRMS Belarus: Supabase setup ===" -ForegroundColor Cyan
     Write-Host ""
 
-    if (-not $PSScriptRoot) {
-        throw "Could not determine script directory."
+    if ($PSScriptRoot) {
+        $root = Split-Path -Path $PSScriptRoot -Parent
+    } else {
+        $root = Split-Path (Get-Location).Path -Parent
     }
-
-    $root = Split-Path -Path $PSScriptRoot -Parent
 
     if (-not (Test-Path (Join-Path $root "docker-compose.yml"))) {
         $root = (Get-Location).Path
@@ -77,6 +77,19 @@ try {
     }
     else {
         Write-Host "[INFO] docker/.env.example was not found. Root .env was not created." -ForegroundColor DarkYellow
+    }
+
+    # Fix CRLF -> LF for pooler.exs (Elixir inside the container crashes on \r)
+    $poolerExs = Join-Path $dockerDir "volumes\pooler\pooler.exs"
+    if (Test-Path $poolerExs) {
+        $raw = [System.IO.File]::ReadAllText($poolerExs)
+        if ($raw -match "`r") {
+            $raw = $raw -replace "`r`n", "`n"
+            [System.IO.File]::WriteAllText($poolerExs, $raw, (New-Object System.Text.UTF8Encoding $false))
+            Write-Host "[OK] Fixed line endings in pooler.exs (CRLF -> LF)." -ForegroundColor Green
+        } else {
+            Write-Host "[OK] pooler.exs line endings are correct." -ForegroundColor Green
+        }
     }
 
     Write-Host ""
